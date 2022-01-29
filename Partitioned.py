@@ -28,14 +28,15 @@ rng = Generator(PCG64(seed=3))
 
 N = 100 # Initial number of particles in the entire box
 M = 100 # initial number of particles on the L.H.S
-plt.figure()
 time = 1000
 Marray = np.zeros(time)
 Rarray = np.zeros_like(Marray)
 tarray = np.zeros_like(Marray)
+
 for t in range(time): # simulating 1000s of time
     r = rng.uniform(0, 1) # Random number between 0 and 1
     frac = M/N # As no other factors are considered, this can be thought of as the probability of moving 
+    R = N-M
     if r < frac: # if random number is less than the fraction, particle moves from LHS to RHS
         M = M-1
     elif r > frac:
@@ -43,14 +44,64 @@ for t in range(time): # simulating 1000s of time
     else: # if equilibrium, end as no more movement is possible
         break
     Marray[t] = M
-    Rarray[t] = 1-M
+    Rarray[t] = R
     tarray[t] = t
 
 plt.plot(tarray,Marray,label = 'LHS')
+plt.plot(tarray,Rarray,label = 'RHS')
 plt.xlabel("Time (arb.)")
 plt.ylabel("Number of particles")
+plt.title("Simple partitioned box simulation")
 plt.hlines(50,0,time,color = 'grey', linestyle = '--')
 plt.legend()
 plt.savefig("IMAGES/Simple partitioned box")
 plt.show()
 
+N = 100 # Initial number of particles in the entire box
+M = 100 # initial number of particles on the L.H.S
+time = 1000
+Marray = np.zeros(time)
+Rarray = np.zeros_like(Marray)
+tarray = np.zeros_like(Marray)
+
+def simple_partition(N,M,time,frac):
+    
+    rng = Generator(PCG64(seed=3))
+    """ Simple partitioned box simulation, where particles movement is dictated only by 
+    the probability of moving to the other side of the partition.
+    
+    Args:
+        N: Total number of particles in the box
+        M: Number of particles initially on the L.H.S
+        time: Length of time (arb. units)
+        frac (0 <= frac <= 1): Probability of a particle moving from the L.H.S to the R.H.S
+    """
+
+    Marray = np.zeros(time)
+    Rarray = np.zeros_like(Marray)
+    tarray = np.zeros_like(Marray)
+     
+    for t in range(time):
+        r = rng.uniform(0, 1)
+        R = N-M # Number of particles on the R.H.S
+        #frac = M/N
+        if r < frac: # if random number is less than the fraction, particle moves from LHS to RHS
+            M = M-1
+        elif r > frac:
+            M = M+1 # otherwise, particle move from RHS to LHS
+        else: # if equilibrium, end as no more movement is possible
+            break
+        
+        Marray[t] = M
+        Rarray[t] = R
+        tarray[t] = t
+    plt.plot(tarray,Marray,label = 'LHS')
+    plt.plot(tarray,Rarray,label = 'RHS')
+    plt.xlabel("Time (arb.)")
+    plt.ylabel("Number of particles")
+    plt.title('Simple partitioned box simulation\n P(LHS $\longrightarrow$ RHS) = {}'.format(frac))
+    plt.legend()
+    plt.savefig("IMAGES/Simple partitioned box, 75")
+    plt.show()
+
+simple_partition(100,100,1000,0.75)
