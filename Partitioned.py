@@ -121,11 +121,14 @@ def simple_partition(N,M,time,prob):
     plt.hlines(N,tarray[0],tarray[time-1], color = 'lightgrey', linestyle = '--')
     plt.xlabel("Time (arb.)")
     plt.ylabel("Number of particles")
-    plt.title('Simple partitioned box simulation\n P(LHS $\longrightarrow$ RHS) = {}'.format(prob))
+    plt.suptitle('Simple partitioned box simulation\n MT19937, seed = {}\n'.format(seed))
+    plt.title('\nP(LHS $\longrightarrow$ RHS) = {}'.format(prob), fontsize = 9)
     plt.legend()
-    plt.savefig("IMAGES/Simple partitioned box_{}".format(int(prob*100)))
+    plt.savefig("IMAGES/Simple partitioned box_{}MT19937".format(int(prob*100)))
     plt.show()
-    print("Simulation time = ${}m s$".format(elapsed_time))
+    print("Simulation time = ${}ms$".format(elapsed_time))
 
+seed = 3
+rng = Generator(MT19937(seed=seed))
 for i in range(3):
     simple_partition(100,100,1000,0.25*(i+1))
