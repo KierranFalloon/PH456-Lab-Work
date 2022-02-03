@@ -4,12 +4,11 @@
     case discussed in class.
 
 """
-
+from time import perf_counter
 import numpy as np
 from numpy.random import Generator, PCG64, MT19937
 import matplotlib.pyplot as plt
-from time import perf_counter
-from scipy.stats import chisquare
+
 
 
 def chisquare_test(array, bins):
@@ -24,13 +23,11 @@ def chisquare_test(array, bins):
         [float]: Chi-squared value
     """
 
-    f_observed, edges = np.histogram(array, bins)  # Split input array into M equal bins
+    f_observed = np.histogram(array, bins)  # Split input array into M equal bins
     f_expected = np.ones(bins) * (len(array) / bins)  # Assume equal spacing in bins
     chi_square_array = [0] * bins  # Placeholding empty array
     for i in range(len(array)):
-        chi_square_array[i] = (f_observed[i] - f_expected[i]) ** 2 / f_expected[
-            i
-        ]  # chi square equation
+        chi_square_array[i] = (f_observed[i] - f_expected[i]) ** 2 / f_expected[i]  # chi square equation
 
     return np.sum(chi_square_array)
 
@@ -239,8 +236,8 @@ for i in range(1000):
     mt199372010chi[i] = chisquare_test(z25, 1000)
     pearsoncoeff6[i] = np.around(np.corrcoef(z2, z25)[0, 1], 5)
 
-wiggle1 = np.round(correlation1[1:1000].max() - correlation1.min(), 2)
-wiggle2 = np.round(correlation2[1:1000].max() - correlation2.min(), 2)
+range1 = np.round(correlation1[1:1000].max() - correlation1.min(), 2)
+range2 = np.round(correlation2[1:1000].max() - correlation2.min(), 2)
 std1 = np.round(np.std(correlation1[1:1000]), 2)
 std2 = np.round(np.std(correlation2[1:1000]), 2)
 
@@ -257,7 +254,7 @@ ax1.hlines(
     "r",
     "--",
     label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(
-        np.round(np.mean(correlation1[1:1000]), 2), std1, wiggle1
+        np.round(np.mean(correlation1[1:1000]), 2), std1, range1
     ),
 )
 ax1.text(1002, 231, "$\Delta$")
@@ -273,7 +270,7 @@ ax2.hlines(
     "r",
     "-.",
     label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(
-        np.round(np.mean(correlation2[1:1000]), 2), std2, wiggle2
+        np.round(np.mean(correlation2[1:1000]), 2), std2, range2
     ),
 )
 ax2.text(1002, 250, "$\Delta$")

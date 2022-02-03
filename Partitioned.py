@@ -1,12 +1,11 @@
+from time import perf_counter
 import numpy as np
 from numpy.random import Generator, PCG64, MT19937
 import matplotlib.pyplot as plt
-from time import perf_counter
-from scipy.stats import chisquare
 
 
 def chisquare_test(array, bins):
-    f_observed, edges = np.histogram(array, bins)  # Split input array into M equal bins
+    f_observed = np.histogram(array, bins)  # Split input array into M equal bins
     f_expected = np.ones(bins) * (len(array) / bins)  # Assume equal spacing in bins
     chi_square_array = [0] * bins  # Placeholding empty array
     for i in range(len(array)):
@@ -134,7 +133,7 @@ def simple_partition(N, M, time, prob):
     plt.suptitle(
         "Simple partitioned box simulation\n MT19937, seed = {}\n".format(seed)
     )
-    plt.title("\nP(LHS $\longrightarrow$ RHS) = {}".format(prob), fontsize=9)
+    plt.title(r"\nP(LHS $\longrightarrow$ RHS) = {}".format(prob), fontsize=9)
     plt.legend()
     plt.savefig("IMAGES/Simple partitioned box_{}MT19937".format(int(prob * 100)))
     plt.show()
