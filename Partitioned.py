@@ -1,6 +1,6 @@
 from time import perf_counter
 import numpy as np
-from numpy.random import Generator, PCG64, MT19937
+from numpy.random import Generator, PCG64, PCG64
 import matplotlib.pyplot as plt
 
 
@@ -27,51 +27,15 @@ unit time. Present your results graphically as well as textually.
 # If r < n/N, move a particle from left to right, that is, let n → n - 1; otherwise, move a particle from right to left.
 # Increase the time by 1.
 
-rng = Generator(PCG64(seed=3))
+rng = Generator(PCG64())
 
-N = 100  # Initial number of particles in the entire box
-M = 100  # initial number of particles on the L.H.S
-time = 1000
-Marray = np.zeros(time)
-Rarray = np.zeros_like(Marray)
-tarray = np.zeros_like(Marray)
+def simple_partition(N, M, time):
 
-for t in range(time):  # simulating 1000s of time
-    r = rng.uniform(0, 1)  # Random number between 0 and 1
-    frac = (
-        M / N
-    )  # As no other factors are considered, this can be thought of as the probability of moving
-
-    if (
-        r < frac
-    ):  # if random number is less than the fraction, particle moves from LHS to RHS
-        M = M - 1
-        R = N - M
-    elif r > frac:
-        M = M + 1  # otherwise, particle move from RHS to LHS
-        R = N - M
-
-    Marray[t] = M
-    Rarray[t] = R
-    tarray[t] = t
-
-plt.figure()
-plt.plot(tarray, Marray, label="LHS")
-plt.plot(tarray, Rarray, label="RHS")
-plt.xlabel("Time (arb.)")
-plt.ylabel("Number of particles")
-plt.title("Simple partitioned box simulation")
-plt.hlines(0, tarray[0], tarray[time - 1], color="lightgrey", linestyle="--")
-plt.hlines(N, tarray[0], tarray[time - 1], color="lightgrey", linestyle="--")
-plt.legend()
-plt.savefig("IMAGES/Simple partitioned box")
-
-
-def simple_partition(N, M, time, prob):
+    plt.figure()
 
     """Simple partitioned box simulation, where particles movement is dictated only by
-    the probability of moving to the other side of the partition. This method tracks only the no.
-    of particles on each side of the partition.
+    the probability of moving to the other side of the partition. This method takes input of
+    probability of passing from LHS to RHS.
 
     Args:
         N: Total number of particles in the box
@@ -81,66 +45,70 @@ def simple_partition(N, M, time, prob):
     """
 
     funcstarttime = perf_counter()
-    Marray = np.zeros(time)
+    Marray = np.ones(M)
     Rarray = np.zeros_like(Marray)
-    tarray = np.zeros_like(Marray)
+    tarray = np.arange(0,time,1)
+    Msumarray = np.zeros(time)
+    Rsumarray = np.zeros(time)
 
-    for t in range(time):
-        r = rng.uniform(0, 1)
-        R = N - M
+    for i in range(time):
+        r = rng.integers(1,N,1)[0]
+        Marray[r], Rarray[r] = Rarray[r], Marray[r]
+        Msumarray[i], Rsumarray[i] = Marray.sum(), Rarray.sum()
 
-        if (
-            r < prob
-        ):  # if random number is less than the fraction, particle moves from LHS to RHS
-            M -= 1
-            R = N - M
-            if M >= N:
-                M = N
-            if R >= N:
-                R = N
-
-            if M <= 0:
-                M = 0
-            if R <= 0:
-                R = 0
-
-        elif r > prob:
-            M += 1  # otherwise, particle move from RHS to LHS
-            R = N - M
-            if M >= N:
-                M = N
-            if R >= N:
-                R = N
-
-            if M <= 0:
-                M = 0
-            if R <= 0:
-                R = 0
-
-        Marray[t] = M
-        Rarray[t] = R
-        tarray[t] = t
+    plt.plot(tarray, Msumarray, label = 'LHS')
+    plt.plot(tarray, Rsumarray, label = 'RHS')
     funcendtime = perf_counter()
     elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4)
 
-    plt.figure()
-    plt.plot(tarray, Marray, label="LHS")
-    plt.plot(tarray, Rarray, label="RHS")
-    plt.hlines(0, tarray[0], tarray[time - 1], color="lightgrey", linestyle="--")
-    plt.hlines(N, tarray[0], tarray[time - 1], color="lightgrey", linestyle="--")
     plt.xlabel("Time (arb.)")
     plt.ylabel("Number of particles")
-    plt.suptitle(
-        "Simple partitioned box simulation\n MT19937, seed = {}\n".format(seed)
-    )
-    plt.title(r"\nP(LHS $\longrightarrow$ RHS) = {}".format(prob), fontsize=9)
+    plt.suptitle('Lecture example, PCG64')
     plt.legend()
-    plt.savefig("IMAGES/Simple partitioned box_{}MT19937".format(int(prob * 100)))
+    plt.tight_layout()
     plt.show()
+    plt.savefig("IMAGES/Simple partitioned box PCG64")
     print("Simulation time = ${}ms$".format(elapsed_time))
 
+def simple_partition_PROB(N, M, time, prob):
 
-seed = 3
-rng = Generator(MT19937(seed=seed))
-for i in range(3):
-    simple_partition(100, 100, 1000, 0.25 * (i + 1))
+    plt.figure()
+
+    """Simple partitioned box simulation, where particles movement is dictated only by
+    the probability of moving to the other side of the partition. This method takes input of
+    probability of passing from LHS to RHS.
+
+    Args:
+        N: Total number of particles in the box
+        M: Number of particles initially on the L.H.S
+        time: Length of time (arb. units)
+        frac (0 <= frac <= 1): Probability of a particle moving from the L.H.S to the R.H.S
+    """
+
+    funcstarttime = perf_counter()
+    Marray = np.ones(M)
+    Rarray = np.zeros_like(Marray)
+    tarray = np.arange(0,time,1)
+    Msumarray = np.zeros(time)
+    Rsumarray = np.zeros(time)
+
+    for i in range(time):
+        r = rng.integers(1,N,1)[0]
+        Marray[r], Rarray[r] = Rarray[r], Marray[r]
+        Msumarray[i], Rsumarray[i] = Marray.sum(), Rarray.sum()
+
+    plt.plot(tarray, Msumarray, label = 'LHS')
+    plt.plot(tarray, Rsumarray, label = 'RHS')
+    funcendtime = perf_counter()
+    elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4)
+
+    plt.xlabel("Time (arb.)")
+    plt.ylabel("Number of particles")
+    plt.suptitle('Lecture example, PCG64')
+    plt.savefig("IMAGES/Simple partitioned box PCG64")
+    plt.show()
+    plt.legend()
+    plt.tight_layout()
+    print("Simulation time = ${}ms$".format(elapsed_time))
+
+simple_partition(1000,1000,10000)

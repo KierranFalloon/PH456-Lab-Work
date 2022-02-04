@@ -48,7 +48,7 @@ timearr = np.zeros(5)
 rng = Generator(PCG64(seed=6))
 # Pseudo-random, uniform range between 0-1 with defined seed
 x1starttime = perf_counter()
-x1 = rng.uniform(0, 1, 2000)
+x1 = rng.random(2000)
 x1endtime = perf_counter()
 timearr[0] = x1endtime - x1starttime
 x15 = np.roll(x1, 10)  # Move each value of x1 10 spaces along
@@ -58,7 +58,7 @@ pcg64chi1 = chisquare_test(x1, 2000)
 rng = Generator(PCG64(seed=15832))
 # Pseudo-random, uniform range between 0-1 with defined seed
 x2starttime = perf_counter()
-x2 = rng.uniform(0, 1, 2000)
+x2 = rng.random(2000)
 x2endtime = perf_counter()
 timearr[1] = x2endtime - x2starttime
 x25 = np.roll(x2, 10)
@@ -115,7 +115,7 @@ plt.savefig(fname="IMAGES/PCG64-15832")
 rng = Generator(MT19937(6))
 # Pseudo-random, uniform range between 0-1 with defined seed
 y1starttime = perf_counter()
-y1 = rng.uniform(0, 1, 2000)
+y1 = rng.random(2000)
 y1endtime = perf_counter()
 timearr[2] = y1endtime - y1starttime
 mt19937chi1 = chisquare_test(y1, 2000)
@@ -133,7 +133,7 @@ plt.savefig(fname="IMAGES/PCG64-MT19937-6")
 rng = Generator(MT19937(5255))
 # Pseudo-random, uniform range between 0-1 with defined seed
 y1starttime = perf_counter()
-y1 = rng.uniform(0, 1, 2000)
+y1 = rng.random(2000)
 y1endtime = perf_counter()
 timearr[3] = y1endtime - y1starttime
 y15 = np.roll(y1, 10)
@@ -143,7 +143,7 @@ mt19937chi1 = chisquare_test(y1, 2000)
 rng = Generator(MT19937(7381))
 # Pseudo-random, uniform range between 0-1 with defined seed
 y2starttime = perf_counter()
-y2 = rng.uniform(0, 1, 2000)
+y2 = rng.random(2000)
 y2endtime = perf_counter()
 timearr[4] = y2endtime - y2starttime
 y25 = np.roll(y2, 10)
@@ -217,7 +217,7 @@ rng = Generator(PCG64(2010))
 # Pseudo-random, uniform range between 0-1 with defined seed
 correlation1 = np.zeros(1000)
 pcg642010chi = np.zeros_like(correlation1)
-z1 = rng.uniform(0, 1, 1000)
+z1 = rng.random(1000)
 pearsoncoeff5 = np.zeros_like(correlation1)
 for i in range(1000):
     z15 = np.roll(z1, shift[i])
@@ -230,7 +230,7 @@ rng = Generator(MT19937(2010))
 correlation2 = np.zeros(1000)
 mt199372010chi = np.zeros_like(correlation2)
 pearsoncoeff6 = np.zeros_like(correlation2)
-z2 = rng.uniform(0, 1, 1000)
+z2 = rng.random(1000)
 for i in range(1000):
     z25 = np.roll(z2, shift[i])
     correlation2[i] = np.correlate(z2, z25)
