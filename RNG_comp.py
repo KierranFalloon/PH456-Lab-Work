@@ -23,17 +23,18 @@ def chisquare_test(array, bins):
         [float]: Chi-squared value
     """
 
-    f_observed = np.histogram(array, bins)  # Split input array into M equal bins
+    f_observed = np.histogram(array, bins)[0]  # Split input array into M equal bins
     f_expected = np.ones(bins) * (len(array) / bins)  # Assume equal spacing in bins
     chi_square_array = [0] * bins  # Placeholding empty array
     for i in range(len(array)):
-        chi_square_array[i] = (f_observed[i] - f_expected[i]) ** 2 / f_expected[i]  # chi square equation
+        chi_square_array[i] = (f_observed[i] - f_expected[i]) ** 2 / f_expected[i]
+         # chi square equation
 
     return np.sum(chi_square_array)
 
     """Using different initial seeds and at least two different pseudo-random
 generators, produce sequences of uniformly distributed random numbers.
-Test these values for a) uniformity and b) lack of sequential
+Test these values for a) sequential and b) lack of sequential
 correlation. Present your analysis as graphically as possible.
     """
 
@@ -78,7 +79,7 @@ plt.title("PCG64\n")
 plt.tight_layout()
 plt.savefig(fname="IMAGES/PCG64-6-15832")
 
-# Shifted value comparison ( uniformity )
+# Shifted value comparison ( sequential )
 plt.figure(figsize=(6, 6))
 plt.scatter(x1, x15, marker="x")
 plt.xlabel("$x_n$")
@@ -92,7 +93,7 @@ plt.title(
 plt.tight_layout()
 plt.savefig(fname="IMAGES/PCG64-6")
 
-# Shifted value comparison ( uniformity )
+# Shifted value comparison ( sequential )
 plt.figure(figsize=(6, 6))
 plt.scatter(x2, x25, marker="x")
 plt.xlabel("$x_n$")
@@ -164,7 +165,7 @@ plt.title("MT19937\n")
 plt.tight_layout()
 plt.savefig(fname="IMAGES/MT19937-5525-7381")
 
-# Shifted value comparison ( uniformity )
+# Shifted value comparison ( sequential )
 plt.figure(figsize=(6, 6))
 plt.scatter(y1, y15, marker="x")
 plt.xlabel("$x_n$")
@@ -178,7 +179,7 @@ plt.title(
 plt.tight_layout()
 plt.savefig(fname="IMAGES/MT19937-5255")
 
-# Shifted value comparison ( uniformity )
+# Shifted value comparison ( sequential )
 plt.figure(figsize=(6, 6))
 plt.scatter(y2, y25, marker="x")
 plt.xlabel("$x_n$")
@@ -247,6 +248,7 @@ ax1.set_title("PCG64")
 ax1.text(
     shift[5], correlation1.max() - 5, "Max = {}".format(np.round(correlation1.max(), 2))
 )
+
 ax1.hlines(
     np.mean(correlation1[1:1000]),
     0,
@@ -257,12 +259,13 @@ ax1.hlines(
         np.round(np.mean(correlation1[1:1000]), 2), std1, range1
     ),
 )
-ax1.text(1002, 231, "$\Delta$")
+
 ax2.plot(shift, correlation2)
 ax2.set_title("MT19937")
 ax2.text(
     shift[5], correlation2.max() - 5, "Max = {}".format(np.round(correlation2.max(), 2))
 )
+
 ax2.hlines(
     np.mean(correlation2[1:1000]),
     0,
@@ -273,7 +276,6 @@ ax2.hlines(
         np.round(np.mean(correlation2[1:1000]), 2), std2, range2
     ),
 )
-ax2.text(1002, 250, "$\Delta$")
 fig.suptitle("Seed = 2010")
 ax2.set_xlabel("Shifted index $i$")
 fig.supylabel("Cross-correlation between $x_n~&~x_{n+i}$")
@@ -282,14 +284,43 @@ ax2.legend()
 plt.tight_layout()
 plt.savefig("IMAGES/Correlation-shift-comparison")
 
+pearson_range1 = np.round(pearsoncoeff5[1:1000].max() - pearsoncoeff5.min(), 4)
+pearson_range2 = np.round(pearsoncoeff6[1:1000].max() - pearsoncoeff6.min(), 4)
+pearson_std1 = np.round(np.std(pearsoncoeff5[1:1000]), 4)
+pearson_std2 = np.round(np.std(pearsoncoeff6[1:1000]), 4)
+
 fig2, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 ax1.plot(shift, pearsoncoeff5)
 ax1.set_title("PCG64")
+
+ax1.hlines(
+    np.mean(pearsoncoeff5[1:1000]),
+    0,
+    1000,
+    "r",
+    "--",
+    label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(
+        np.round(np.mean(pearsoncoeff5[1:1000])*-1, 2), pearson_std1, pearson_range1
+    ),
+)
 ax2.plot(shift, pearsoncoeff6)
 ax2.set_title("MT19937")
+
+ax2.hlines(
+    np.mean(pearsoncoeff6[1:1000]),
+    0,
+    1000,
+    "r",
+    "--",
+    label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(
+        np.round(np.mean(pearsoncoeff6[1:1000])*-1, 2), pearson_std2, pearson_range2
+    ),
+)
+
 fig2.suptitle("Seed = 2010")
 ax2.set_xlabel("Shifted index $i$")
 fig2.supylabel(r"$\rho_{XY}$ between $x_n~&~x_{n+i}$")
 ax1.legend()
 ax2.legend()
+plt.tight_layout()
 plt.savefig("IMAGES/Pearson-shift-comparison")
