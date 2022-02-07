@@ -1,9 +1,3 @@
-"""
-    The aims the exercise this week is to produce and test random numbers
-    and then apply them to a simple partitioned box problem, similar to the
-    case discussed in class.
-
-"""
 from time import perf_counter
 import numpy as np
 from numpy.random import Generator, PCG64, MT19937
