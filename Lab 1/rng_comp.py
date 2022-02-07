@@ -79,37 +79,34 @@ plt.figure(figsize=(6, 6))
 plt.scatter(x1, x2, marker="x")
 plt.xlabel("Seed = 6, $\chi^2 = {}$".format(pcg64chi1))
 plt.ylabel("Seed = 15832, $\chi^2 = {}$".format(pcg64chi2))
-plt.title("PCG64\n")
 plt.tight_layout()
-plt.savefig(fname="IMAGES/PCG64-6-15832")
+plt.savefig(fname="PCG64-6-15832")
 
 # Shifted value comparison ( sequential )
 plt.figure(figsize=(6, 6))
 plt.scatter(x1, x15, marker="x")
 plt.xlabel("$x_n$")
 plt.ylabel("$x_{n+10}$")
-plt.suptitle("PCG64, seed = 6")
 plt.title(
     r"Cross-correlation $\approx %1.2f$, $\chi^2 \approx %s, \rho_{XY}\approx %1.4f$"
     % (correl1, pcg64chi1, pearsoncoeff1),
     fontsize=10,
 )
 plt.tight_layout()
-plt.savefig(fname="IMAGES/PCG64-6")
+plt.savefig(fname="PCG64-6")
 
 # Shifted value comparison ( sequential )
 plt.figure(figsize=(6, 6))
 plt.scatter(x2, x25, marker="x")
 plt.xlabel("$x_n$")
 plt.ylabel("$x_{n+10}$")
-plt.suptitle("PCG64, seed = 15832")
 plt.title(
     r"Cross-correlation $\approx %1.2f$, $\chi^2 \approx %s, \rho_{XY}\approx %1.4f$"
     % (correl2, pcg64chi2, pearsoncoeff2),
     fontsize=10,
 )
 plt.tight_layout()
-plt.savefig(fname="IMAGES/PCG64-15832")
+plt.savefig(fname="PCG64-15832")
 
 
 #####################################################
@@ -135,9 +132,8 @@ plt.figure(figsize=(6, 6))
 plt.scatter(x1, y1, marker="x")
 plt.xlabel("PCG64, seed = 6, $\chi^2 = {}$".format(pcg64chi1))
 plt.ylabel("MT19937, seed = 6, $\chi^2 = {}$".format(mt19937chi1))
-plt.title("PCG64-MT19937-6\n")
 plt.tight_layout()
-plt.savefig(fname="IMAGES/PCG64-MT19937-6")
+plt.savefig(fname="PCG64-MT19937-6")
 
 #####################################################
 # 
@@ -185,9 +181,8 @@ plt.figure(figsize=(6, 6))
 plt.scatter(y1, y2, marker="x")
 plt.xlabel("Seed = 5255, $\chi^2 = {}$".format(mt19937chi1))
 plt.ylabel("Seed = 7381, $\chi^2 = {}$".format(mt19937chi2))
-plt.title("MT19937\n")
 plt.tight_layout()
-plt.savefig(fname="IMAGES/MT19937-5525-7381")
+plt.savefig(fname="MT19937-5525-7381")
 
 
 ################################################
@@ -198,28 +193,26 @@ plt.figure(figsize=(6, 6))
 plt.scatter(y1, y15, marker="x")
 plt.xlabel("$x_n$")
 plt.ylabel("$x_{n+10}$")
-plt.suptitle("MT19937, seed = 5255")
 plt.title(
     r"Cross-correlation $\approx %1.2f$, $\chi^2 \approx %s, \rho_{XY}\approx %1.4f$"
     % (correl3, mt19937chi1, pearsoncoeff3),
     fontsize=10,
 )
 plt.tight_layout()
-plt.savefig(fname="IMAGES/MT19937-5255")
+plt.savefig(fname="MT19937-5255")
 
 
 plt.figure(figsize=(6, 6))
 plt.scatter(y2, y25, marker="x")
 plt.xlabel("$x_n$")
 plt.ylabel("$x_{n+10}$")
-plt.suptitle("MT19937, seed = 7381")
 plt.title(
     r"Cross-correlation $\approx %1.2f$, $\chi^2 \approx %s, \rho_{XY}\approx %1.4f$"
     % (correl4, mt19937chi2, pearsoncoeff4),
     fontsize=10,
 )
 plt.tight_layout()
-plt.savefig(fname="IMAGES/MT19937-7381")
+plt.savefig(fname="MT19937-7381")
 
 ################################################
 # Time taken for each random generator
@@ -293,14 +286,13 @@ ax2.text(shift[5], correlation2.max() - 5, "Max = {}".format(np.round(correlatio
 ax2.hlines(np.mean(correlation2[1:1000]),0,1000,"r","-.",
            label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
            .format(np.round(np.mean(correlation2[1:1000]), 2), std2, range2))
-fig.suptitle("Seed = 2010")
 ax2.set_xlabel("Shifted index $i$")
 
 fig.supylabel("Cross-correlation between $x_n~&~x_{n+i}$")
 ax1.legend()
 ax2.legend()
 plt.tight_layout()
-plt.savefig("IMAGES/Correlation-shift-comparison")
+plt.savefig("Correlation-shift-comparison")
 
 ################################################
 # Comparing shifted value vs pearson values
@@ -324,10 +316,9 @@ ax2.hlines(np.mean(pearsoncoeff6[1:1000]),0,1000,"r","--",
            label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
            .format(np.round(np.mean(pearsoncoeff6[1:1000])*-1, 2), pearson_std2, pearson_range2))
 
-fig2.suptitle("Seed = 2010")
 ax2.set_xlabel("Shifted index $i$")
 fig2.supylabel(r"$\rho_{XY}$ between $x_n~&~x_{n+i}$")
 ax1.legend()
 ax2.legend()
 plt.tight_layout()
-plt.savefig("IMAGES/Pearson-shift-comparison")
+plt.savefig("Pearson-shift-comparison")

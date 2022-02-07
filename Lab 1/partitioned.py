@@ -48,7 +48,6 @@ def simple_partition(N, M, time):
 
     plt.xlabel("Time (arb.)")
     plt.ylabel("Number of particles")
-    plt.suptitle('Lecture example, PCG64')
     plt.legend()
     plt.tight_layout()
     print(r"Simulation time = ${}ms$".format(elapsed_time))
@@ -91,17 +90,16 @@ def simple_partition_PROB(N, M, time, prob):
     plt.plot(tarray, Rsumarray, label = 'RHS')
     plt.xlabel("Time (arb.)")
     plt.ylabel("Number of particles")
-    plt.suptitle('MT19937')
     plt.title('$P(LHS \Rightarrow RHS) = {}$'.format(prob))
     plt.hlines(int(prob*N),0,time,'lightgrey','--')
     plt.hlines(int((1-prob)*N),0,time,'lightgrey','--')
     plt.legend()
     plt.tight_layout()
     #plt.show()
-    plt.savefig(fname = "Lab 1/IMAGES/MT19937_{}".format(int(prob*100)))
+    plt.savefig(fname = "Lab 1/PCG64_{}".format(int(prob*100)))
     print(r"Simulation time = ${}ms$".format(elapsed_time))
 
-rng = Generator(MT19937())
+rng = Generator(PCG64())
 prob = 0.25
 while prob < 1:
     simple_partition_PROB(1000,1000,10000,prob)
