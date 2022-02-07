@@ -36,7 +36,7 @@ Test these values for a) sequential and b) lack of sequential
 correlation. Present your analysis as graphically as possible.
     """
 
-############################################ 
+############################################
 # 
 # Comparing two seeds of the same generator
 #
@@ -289,12 +289,16 @@ fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 ax1.plot(shift, correlation1)
 ax1.set_title("PCG64")
 ax1.text(shift[5], correlation1.max() - 5, "Max = {}".format(np.round(correlation1.max(), 2)))
-ax1.hlines(np.mean(correlation1[1:1000]),0,1000,"r","--",label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(np.round(np.mean(correlation1[1:1000]), 2), std1, range1))
+ax1.hlines(np.mean(correlation1[1:1000]),0,1000,"r","--",
+           label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
+           .format(np.round(np.mean(correlation1[1:1000]), 2), std1, range1))
 
 ax2.plot(shift, correlation2)
 ax2.set_title("MT19937")
 ax2.text(shift[5], correlation2.max() - 5, "Max = {}".format(np.round(correlation2.max(), 2)))
-ax2.hlines(np.mean(correlation2[1:1000]),0,1000,"r","-.",label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(np.round(np.mean(correlation2[1:1000]), 2), std2, range2))
+ax2.hlines(np.mean(correlation2[1:1000]),0,1000,"r","-.",
+           label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
+           .format(np.round(np.mean(correlation2[1:1000]), 2), std2, range2))
 fig.suptitle("Seed = 2010")
 ax2.set_xlabel("Shifted index $i$")
 
@@ -316,11 +320,15 @@ pearson_std2 = np.round(np.std(pearsoncoeff6[1:1000]), 4)
 fig2, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 ax1.plot(shift, pearsoncoeff5)
 ax1.set_title("PCG64")
-ax1.hlines(np.mean(pearsoncoeff5[1:1000]),0,1000,"r","--",label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(    np.round(np.mean(pearsoncoeff5[1:1000])*-1, 2), pearson_std1, pearson_range1))
+ax1.hlines(np.mean(pearsoncoeff5[1:1000]),0,1000,"r","--",
+           label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
+           .format(np.round(np.mean(pearsoncoeff5[1:1000])*-1, 2), pearson_std1, pearson_range1))
 
 ax2.plot(shift, pearsoncoeff6)
 ax2.set_title("MT19937")
-ax2.hlines(np.mean(pearsoncoeff6[1:1000]),0,1000,"r","--",label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$".format(np.round(np.mean(pearsoncoeff6[1:1000])*-1, 2), pearson_std2, pearson_range2))
+ax2.hlines(np.mean(pearsoncoeff6[1:1000]),0,1000,"r","--",
+           label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
+           .format(np.round(np.mean(pearsoncoeff6[1:1000])*-1, 2), pearson_std2, pearson_range2))
 
 fig2.suptitle("Seed = 2010")
 ax2.set_xlabel("Shifted index $i$")
