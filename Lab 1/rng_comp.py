@@ -30,12 +30,6 @@ def chisquare_test(array, bins):
 
     return np.sum(chi_square_array)
 
-    """Using different initial seeds and at least two different pseudo-random
-generators, produce sequences of uniformly distributed random numbers.
-Test these values for a) sequential and b) lack of sequential
-correlation. Present your analysis as graphically as possible.
-    """
-
 ############################################
 # 
 # Comparing two seeds of the same generator
