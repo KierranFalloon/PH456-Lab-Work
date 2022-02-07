@@ -9,9 +9,8 @@ def chisquare_test(array, bins):
     f_expected = np.ones(bins) * (len(array) / bins)  # Assume equal spacing in bins
     chi_square_array = [0] * bins  # Placeholding empty array
     for i in range(len(array)):
-        chi_square_array[i] = (f_observed[i] - f_expected[i]) ** 2 / f_expected[
-            i
-        ]  # chi square equation
+        chi_square_array[i] = (f_observed[i] - f_expected[i]) ** 2 / f_expected[i]
+        # chi square equation
 
     return np.sum(chi_square_array)
 
@@ -20,12 +19,6 @@ initially all on one side of the partition, with an equal probability of
 any one particle moving from one side of the partition to the other in
 unit time. Present your results graphically as well as textually.
     """
-
-
-# Generate a random number r from a uniformly distributed set of random numbers in the interval 0 ≤ r < 1.
-# Compare r to the current value of the fraction of particles n/N on the left side of the box.
-# If r < n/N, move a particle from left to right, that is, let n → n - 1; otherwise, move a particle from right to left.
-# Increase the time by 1.
 
 rng = Generator(PCG64())
 
@@ -84,10 +77,10 @@ def simple_partition_PROB(N, M, time, prob):
     """
 
     funcstarttime = perf_counter()
-    Marray = np.ones(M)
-    Rarray = np.zeros_like(Marray)
-    tarray = np.arange(0,time,1)
-    Msumarray = np.zeros(time)
+    Marray = np.ones(M) # Assigning '1' to be the LHS state
+    Rarray = np.zeros_like(Marray) # Assigning '0' to be the RHS state
+    tarray = np.arange(0,time,1) # Arbitrary time array for plotting
+    Msumarray = np.zeros(time) # Sum array for plotting
     Rsumarray = np.zeros(time)
     
     for i in range(time):
@@ -100,7 +93,7 @@ def simple_partition_PROB(N, M, time, prob):
         Msumarray[i], Rsumarray[i] = Marray.sum(), Rarray.sum() 
         # Sum particle no.s at each step for plotting
     funcendtime = perf_counter()
-    elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4)
+    elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4) # Time taken for loops
 
     plt.plot(tarray, Msumarray, label = 'LHS')
     plt.plot(tarray, Rsumarray, label = 'RHS')
