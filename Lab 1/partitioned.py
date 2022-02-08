@@ -33,16 +33,21 @@ def simple_partition(N, M, time):
     Marray = np.ones(M)
     Rarray = np.zeros_like(Marray)
     tarray = np.arange(0,time,1)
-    Msumarray = np.zeros(time)
-    Rsumarray = np.zeros(time)
+    Msumarray = np.empty(time)
+    Rsumarray = np.empty(time)
+    Meanarray = np.empty((time,2))
 
     for i in range(time):
         r = rng.integers(1,N,1)[0]
         Marray[r], Rarray[r] = Rarray[r], Marray[r]
         Msumarray[i], Rsumarray[i] = Marray.sum(), Rarray.sum()
-
+        Meanarray[i,0] = np.mean(Msumarray[:i])
+        Meanarray[i,1] = np.mean(Rsumarray[:i])
+        
     plt.plot(tarray, Msumarray, label = 'LHS')
     plt.plot(tarray, Rsumarray, label = 'RHS')
+    plt.plot(tarray, Meanarray[:,0],label = 'Mean LHS', linestyle = '--')
+    plt.plot(tarray, Meanarray[:,1], label = 'Mean RHS', linestyle = '--')
     funcendtime = perf_counter()
     elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4)
 
@@ -51,7 +56,7 @@ def simple_partition(N, M, time):
     plt.legend()
     plt.tight_layout()
     plt.hlines(1/2*N,0,time,'lightgrey','--')
-    plt.savefig(fname = "Lab 1/IMAGES/PCG64_Lec_Ex")
+    plt.savefig(fname = "Lab 1/IMAGES/MT19937_Lec_Ex")
     print("Simulation time = {}ms".format(elapsed_time))
 
 def simple_partition_PROB(N, M, time, prob):
@@ -75,6 +80,7 @@ def simple_partition_PROB(N, M, time, prob):
     tarray = np.arange(0,time,1) # Arbitrary time array for plotting
     Msumarray = np.zeros(time) # Sum array for plotting
     Rsumarray = np.zeros(time)
+    Meanarray = np.empty((time,2))
     
     for i in range(time):
         r = rng.random() # Create random float between 0 and 1
@@ -83,13 +89,17 @@ def simple_partition_PROB(N, M, time, prob):
             Marray[index], Rarray[index] = 0 , 1 # Move a particle from LHS to RHS
         else: 
             Marray[index], Rarray[index] = 1 , 0 # Move a particle from RHS to LHS
-        Msumarray[i], Rsumarray[i] = Marray.sum(), Rarray.sum() 
+        Msumarray[i], Rsumarray[i] = Marray.sum(), Rarray.sum()
+        Meanarray[i,0] = np.mean(Msumarray[:i])
+        Meanarray[i,1] = np.mean(Rsumarray[:i])
         # Sum particle no.s at each step for plotting
     funcendtime = perf_counter()
     elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4) # Time taken for loops
 
     plt.plot(tarray, Msumarray, label = 'LHS')
     plt.plot(tarray, Rsumarray, label = 'RHS')
+    plt.plot(tarray, Meanarray[:,0],label = 'Mean LHS', linestyle = '--')
+    plt.plot(tarray, Meanarray[:,1], label = 'Mean RHS', linestyle = '--')
     plt.xlabel("Time (arb.)")
     plt.ylabel("Number of particles")
     plt.title('$P(LHS \Rightarrow RHS) = {}$'.format(prob))
@@ -98,10 +108,10 @@ def simple_partition_PROB(N, M, time, prob):
     plt.legend()
     plt.tight_layout()
     #plt.show()
-    plt.savefig(fname = "Lab 1/IMAGES/PCG64_{}".format(int(prob*100)))
+    plt.savefig(fname = "Lab 1/IMAGES/MT19937_{}".format(int(prob*100)))
     print("Simulation time = {}ms".format(elapsed_time))
 
-rng = Generator(PCG64(seed=2010)) # Change accordingly
+rng = Generator(MT19937(seed=2010)) # Change accordingly
 simple_partition(200,200,4000) 
 
 prob = 0.25
