@@ -43,7 +43,6 @@ x1endtime = perf_counter()
 timearr[0] = x1endtime - x1starttime
 
 x15 = np.roll(x1, 10)  # Move each value of x1 10 spaces along
-pcg64chi1 = chisquare_test(x1, 2000)
 
 # Bitgenerator PCG64 (default for numpy), with seed 15832
 rng = Generator(PCG64(seed=15832))
@@ -58,11 +57,14 @@ x25 = np.roll(x2, 10)
 # Statistical tests 
 ####################################
 
+pcg64chi1 = chisquare_test(x1, 2000)
 pcg64chi2 = chisquare_test(x2, 2000)
 pcg64chi3 = chisquare_test(x15, 2000)
 pcg64chi4 = chisquare_test(x25, 2000)
+correl_seeds = np.around(np.correlate(x1, x2)[0], 2)
 correl1 = np.around(np.correlate(x1, x15)[0], 2)
 correl2 = np.around(np.correlate(x2, x25)[0], 2)
+pearsoncoeff_seeds = np.around(np.corrcoef(x1, x2)[0, 1], 5)
 pearsoncoeff1 = np.around(np.corrcoef(x1, x15)[0, 1], 5)
 pearsoncoeff2 = np.around(np.corrcoef(x2, x25)[0, 1], 5)
 
@@ -71,6 +73,10 @@ pearsoncoeff2 = np.around(np.corrcoef(x2, x25)[0, 1], 5)
 ####################################
 plt.figure(figsize=(6, 6))
 plt.scatter(x1, x2, marker="x")
+plt.title(
+    r"Cross-correlation $\approx %1.2f, \rho_{XY}\approx %1.4f$"
+    % (correl_seeds, pearsoncoeff_seeds),
+    fontsize=10,)
 plt.xlabel("Seed = 6, $\chi^2 = {}$".format(pcg64chi1))
 plt.ylabel("Seed = 15832, $\chi^2 = {}$".format(pcg64chi2))
 plt.tight_layout()
@@ -116,7 +122,15 @@ y1starttime = perf_counter()
 y1 = rng.random(2000)
 y1endtime = perf_counter()
 timearr[2] = y1endtime - y1starttime
+
+
+####################################
+# Statistical tests 
+####################################
+
 mt19937chi1 = chisquare_test(y1, 2000)
+correl_seeds2 = np.around(np.correlate(x1, y1)[0], 2)
+pearsoncoeff_seeds2 = np.around(np.corrcoef(x1, y1)[0, 1], 5)
 
 ####################################
 # Plotting routine
@@ -124,6 +138,10 @@ mt19937chi1 = chisquare_test(y1, 2000)
 
 plt.figure(figsize=(6, 6))
 plt.scatter(x1, y1, marker="x")
+plt.title(
+    r"Cross-correlation $\approx %1.2f, \rho_{XY}\approx %1.4f$"
+    % (correl_seeds2, pearsoncoeff_seeds2),
+    fontsize=10,)
 plt.xlabel("PCG64, seed = 6, $\chi^2 = {}$".format(pcg64chi1))
 plt.ylabel("MT19937, seed = 6, $\chi^2 = {}$".format(mt19937chi1))
 plt.tight_layout()
@@ -162,8 +180,10 @@ mt19937chi1 = chisquare_test(y1, 2000)
 mt19937chi2 = chisquare_test(y2, 2000)
 mt19937chi3 = chisquare_test(y15, 2000)
 mt19937chi4 = chisquare_test(y25, 2000)
+correl_seeds3 = np.around(np.correlate(y1, y2)[0], 2)
 correl3 = np.around(np.correlate(y1, y15)[0], 2)
 correl4 = np.around(np.correlate(y2, y25)[0], 2)
+pearsoncoeff_seeds3 = np.around(np.corrcoef(y1, y2)[0, 1], 5)
 pearsoncoeff3 = np.around(np.corrcoef(y1, y15)[0, 1], 5)
 pearsoncoeff4 = np.around(np.corrcoef(y2, y25)[0, 1], 5)
 
@@ -173,11 +193,14 @@ pearsoncoeff4 = np.around(np.corrcoef(y2, y25)[0, 1], 5)
 
 plt.figure(figsize=(6, 6))
 plt.scatter(y1, y2, marker="x")
+plt.title(
+    r"Cross-correlation $\approx %1.2f, \rho_{XY}\approx %1.4f$"
+    % (correl_seeds3, pearsoncoeff_seeds3),
+    fontsize=10,)
 plt.xlabel("Seed = 5255, $\chi^2 = {}$".format(mt19937chi1))
 plt.ylabel("Seed = 7381, $\chi^2 = {}$".format(mt19937chi2))
 plt.tight_layout()
 plt.savefig(fname="MT19937-5525-7381")
-
 
 ################################################
 # Plotting routine
