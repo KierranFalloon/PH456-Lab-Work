@@ -234,6 +234,7 @@ plt.savefig(fname="MT19937-7381")
 ################################################
 # Time taken for each random generator
 ################################################
+
 print(
     "\nTimes: \n PCG64-6 =",
     timearr[0] / 1e-6,

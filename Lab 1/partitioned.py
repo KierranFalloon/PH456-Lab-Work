@@ -50,7 +50,9 @@ def simple_partition(N, M, time):
     plt.ylabel("Number of particles")
     plt.legend()
     plt.tight_layout()
-    print(r"Simulation time = ${}ms$".format(elapsed_time))
+    plt.hlines(1/2*N,0,time,'lightgrey','--')
+    plt.savefig(fname = "Lab 1/IMAGES/PCG64_Lec_Ex")
+    print("Simulation time = {}ms".format(elapsed_time))
 
 def simple_partition_PROB(N, M, time, prob):
 
@@ -96,11 +98,13 @@ def simple_partition_PROB(N, M, time, prob):
     plt.legend()
     plt.tight_layout()
     #plt.show()
-    plt.savefig(fname = "Lab 1/PCG64_{}".format(int(prob*100)))
-    print(r"Simulation time = ${}ms$".format(elapsed_time))
+    plt.savefig(fname = "Lab 1/IMAGES/PCG64_{}".format(int(prob*100)))
+    print("Simulation time = {}ms".format(elapsed_time))
 
-rng = Generator(PCG64())
+rng = Generator(PCG64(seed=2010)) # Change accordingly
+simple_partition(200,200,4000) 
+
 prob = 0.25
 while prob < 1:
-    simple_partition_PROB(1000,1000,10000,prob)
+    simple_partition_PROB(200,200,4000,prob)
     prob+=0.25
