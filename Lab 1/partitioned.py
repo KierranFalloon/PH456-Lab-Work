@@ -56,12 +56,10 @@ def simple_partition(N, M, time):
     plt.legend()
     plt.tight_layout()
     plt.hlines(1/2*N,0,time,'lightgrey','--')
-    plt.savefig(fname = "Lab 1/IMAGES/MT19937_Lec_Ex")
+    plt.savefig(fname = "Lab 1/IMAGES/PCG64_Lec_Ex")
     print("Simulation time = {}ms".format(elapsed_time))
 
-def simple_partition_PROB(N, M, time, prob):
-
-    plt.figure()
+def simple_partition_PROB(N, M, time, prob, plot_count):
 
     """Simple partitioned box simulation, where particles movement is dictated only by
     the probability of moving to the other side of the partition. This method takes input of
@@ -73,7 +71,7 @@ def simple_partition_PROB(N, M, time, prob):
         time: Length of time (arb. units)
         prob (0 <= prob <= 1): Desired probability of a particle moving from the L.H.S to the R.H.S
     """
-
+    
     funcstarttime = perf_counter()
     Marray = np.ones(M) # Assigning '1' to be the LHS state
     Rarray = np.zeros_like(Marray) # Assigning '0' to be the RHS state
@@ -96,25 +94,30 @@ def simple_partition_PROB(N, M, time, prob):
     funcendtime = perf_counter()
     elapsed_time = np.round((funcendtime - funcstarttime) * 1e3, 4) # Time taken for loops
 
-    plt.plot(tarray, Msumarray, label = 'LHS')
-    plt.plot(tarray, Rsumarray, label = 'RHS')
-    plt.plot(tarray, Meanarray[:,0],label = 'Mean LHS', linestyle = '--')
-    plt.plot(tarray, Meanarray[:,1], label = 'Mean RHS', linestyle = '--')
-    plt.xlabel("Time (arb.)")
-    plt.ylabel("Number of particles")
-    plt.title('$P(LHS \Rightarrow RHS) = {}$'.format(prob))
-    plt.hlines(int(prob*N),0,time,'lightgrey','--')
-    plt.hlines(int((1-prob)*N),0,time,'lightgrey','--')
-    plt.legend()
-    plt.tight_layout()
-    #plt.show()
-    plt.savefig(fname = "Lab 1/IMAGES/MT19937_{}".format(int(prob*100)))
-    print("Simulation time = {}ms".format(elapsed_time))
+    axs[plot_count].plot(tarray, Msumarray, label = 'LHS')
+    axs[plot_count].plot(tarray, Rsumarray, label = 'RHS')
+    axs[plot_count].plot(tarray, Meanarray[:,0],label = 'Mean LHS', linestyle = '--')
+    axs[plot_count].plot(tarray, Meanarray[:,1], label = 'Mean RHS', linestyle = '--')
+    axs[plot_count].hlines(int(prob*N),0,time,'lightgrey','--')
+    axs[plot_count].hlines(int((1-prob)*N),0,time,'lightgrey','--')
+    axs[plot_count].set_title('$P(LHS \Rightarrow RHS) = {}$'.format(prob))
+    plot_count+=1
+        
+    fig.supxlabel("Time (arb.)")
+    fig.supylabel("Number of particles")
+    axs[0].legend(bbox_to_anchor=(0,1.1,1,0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=4)
+    fig.tight_layout()
+    #print("Simulation time = {}ms".format(elapsed_time))
 
-rng = Generator(MT19937(seed=2010)) # Change accordingly
-simple_partition(200,200,4000) 
+rng = Generator(PCG64(seed=2010)) # Change accordingly
+#simple_partition(200,200,4000) 
 
 prob = 0.25
+plot_count = 0
+fig, axs = plt.subplots(3, sharex=True, sharey=True, figsize = (10,10))
 while prob < 1:
-    simple_partition_PROB(200,200,4000,prob)
+    simple_partition_PROB(200,200,4000,prob, plot_count)
+    plot_count +=1
     prob+=0.25
+plt.savefig("Lab 1/IMAGES/PCG64_Partitioned_Box")
