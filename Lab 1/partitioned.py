@@ -14,8 +14,13 @@ def chisquare_test(array, bins):
 
     return np.sum(chi_square_array)
 
-def simple_partition(N, M, time):
+def simple_partition(generator, seed, N, M, time):
+    
+    assert generator in [PCG64,MT19937], 'rng2 - Valid bitgenerator must be used'
 
+    # Get names as strings from np.random class
+    bit_generator = generator.__name__
+    rng = Generator(generator(seed = seed))
     plt.figure()
 
     """Simple partitioned box simulation, where particles movement is dictated only by
@@ -54,12 +59,19 @@ def simple_partition(N, M, time):
     plt.xlabel("Time (arb.)")
     plt.ylabel("Number of particles")
     plt.legend()
-    plt.tight_layout()
     plt.hlines(1/2*N,0,time,'lightgrey','--')
-    plt.savefig(fname = "Lab 1/IMAGES/PCG64_Lec_Ex")
-    print("Simulation time = {}ms".format(elapsed_time))
+    plt.tight_layout()
+    plt.savefig(fname = "Lab 1/IMAGES/{}_{}_Lec_Ex".format(bit_generator, seed))
 
-def simple_partition_PROB(N, M, time, prob, plot_count):
+    return print("Simulation time = {}ms".format(elapsed_time))
+
+def simple_partition_PROB(generator, seed, N, M, time, prob, plot_count):
+    
+    assert generator in [PCG64,MT19937], 'rng2 - Valid bitgenerator must be used'
+
+    # Get names as strings from np.random class
+    bit_generator = generator.__name__
+    rng = Generator(generator(seed = seed))
 
     """Simple partitioned box simulation, where particles movement is dictated only by
     the probability of moving to the other side of the partition. This method takes input of
@@ -108,16 +120,19 @@ def simple_partition_PROB(N, M, time, prob, plot_count):
     axs[0].legend(bbox_to_anchor=(0,1.1,1,0.2), loc="lower left",
                 mode="expand", borderaxespad=0, ncol=4)
     fig.tight_layout()
-    #print("Simulation time = {}ms".format(elapsed_time))
+    
+    print("Simulation time = {}ms".format(elapsed_time))
 
-rng = Generator(PCG64(seed=2010)) # Change accordingly
-#simple_partition(200,200,4000) 
+#simple_partition(PCG64, 2010, 200, 200, 4000)
+#simple_partition(MT19937, 2010, 200, 200, 4000)
 
 prob = 0.25
 plot_count = 0
 fig, axs = plt.subplots(3, sharex=True, sharey=True, figsize = (10,10))
 while prob < 1:
-    simple_partition_PROB(200,200,4000,prob, plot_count)
+    simple_partition_PROB(PCG64, 2010, 200, 200, 4000, prob, plot_count)
+    #simple_partition_PROB(MT19937, 2010, 200, 200, 4000, prob, plot_count)
     plot_count +=1
     prob+=0.25
-plt.savefig("Lab 1/IMAGES/PCG64_Partitioned_Box")
+
+#plt.savefig("Lab 1/IMAGES/{}_Partitioned_Box.png".format(PCG64.__name__))
