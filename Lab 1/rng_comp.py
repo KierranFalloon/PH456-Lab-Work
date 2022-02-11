@@ -293,6 +293,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
                  .format(bit_generator_1, seed_1, time_1*1e6, bit_generator_2, seed_2, time_2*1e6))
 
 
+# Generate results
 rng_tests(PCG64,PCG64,6,15832,2000)
 rng_tests(PCG64,MT19937,6,6,2000)
 rng_tests(MT19937,MT19937,5255,7381,2000)
