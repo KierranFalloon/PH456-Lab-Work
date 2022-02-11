@@ -3,13 +3,13 @@ import numpy as np
 from numpy.random import Generator, PCG64, MT19937
 import matplotlib.pyplot as plt
 
-def chi_1square_test(array, bins):
+def chisquare_test(array, bins):
 
-    """chi_1-squared test
+    """chi-squared test
 
     Args:
         array: Array to be tested
-        bins: Number of bins 'array' is to be split into
+        bins [int]: Number of bins 'array' is to be split into
 
     Returns:
         [float]: chi_1-squared value
@@ -85,8 +85,8 @@ def rng_tests(generator_1, generator_2, seed_1, seed_2, number_of_points):
     # Statistical tests
     ####################################
 
-    chi_1 = chi_1square_test(x_1, number_of_points) # chi_1square tests from defined function
-    chi_2 = chi_1square_test(x_2, number_of_points)
+    chi_1 = chisquare_test(x_1, number_of_points) # chi_1square tests from defined function
+    chi_2 = chisquare_test(x_2, number_of_points)
     # ( chi_1square does not change for shifting values )
     # Cross correlation between
     correl_initial = np.around(np.correlate(x_1, x_2)[0], 2) # Initial arrays
@@ -207,7 +207,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     for i in range(number_of_points):
         x_15 = np.roll(x_1, shift[i]) # Shift values by 1
         correlation_1[i] = np.correlate(x_1, x_15) # Calculate and append stats
-        chi_1[i] = chi_1square_test(x_15, number_of_points)
+        chi_1[i] = chisquare_test(x_15, number_of_points)
         pearsoncoeff5[i] = np.around(np.corrcoef(x_1, x_15)[0, 1], 5)
 
     correlation_2 = np.zeros(number_of_points)
@@ -224,7 +224,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     for i in range(number_of_points):
         x_25 = np.roll(x_2, shift[i]) # Shift value by 1
         correlation_2[i] = np.correlate(x_2, x_25) # Calculate and append stats
-        chi_2[i] = chi_1square_test(x_25, number_of_points)
+        chi_2[i] = chisquare_test(x_25, number_of_points)
         pearsoncoeff6[i] = np.around(np.corrcoef(x_2, x_25)[0, 1], 5)
 
     # Values for visualisation
