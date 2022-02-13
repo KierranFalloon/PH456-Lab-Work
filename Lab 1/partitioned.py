@@ -136,8 +136,12 @@ def simple_partition_prob(generator, seed, total_particles, lhs_particles, time,
 
     print("Simulation time = {}ms".format(elapsed_time))
 
+# Generate data
+
 #simple_partition(PCG64, 2010, 200, 200, 4000)
 #simple_partition(MT19937, 2010, 200, 200, 4000)
+#simple_partition(PCG64, 15832, 200, 200, 4000)
+#simple_partition(MT19937, 5255, 200, 200, 4000)
 
 Prob = 0.25
 Plot_count = 0
