@@ -141,13 +141,16 @@ def simple_partition_prob(generator, seed, total_particles, lhs_particles, time,
 #simple_partition(PCG64, 2010, 200, 200, 4000)
 #simple_partition(MT19937, 2010, 200, 200, 4000)
 #simple_partition(PCG64, 15832, 200, 200, 4000)
-#simple_partition(MT19937, 5255, 200, 200, 4000)
+#simple_partition(PCG64, 15832, 200, 200, 4000)
+#simple_partition(PCG64, 6, 200, 200, 4000)
+#simple_partition(MT19937, 15832, 200, 200, 4000)
+#simple_partition(MT19937, 6, 200, 200, 4000)
 
 Prob = 0.25
 Plot_count = 0
 fig, axs = plt.subplots(3, sharex=True, sharey=True, figsize = (10,10))
 while Prob < 1:
-    simple_partition_prob(PCG64, 2010, 200, 200, 4000, Prob, Plot_count)
-    #simple_partition_prob(MT19937, 2010, 200, 200, 4000, prob, plot_count)
+    #simple_partition_prob(PCG64, 6, 200, 200, 4000, Prob, Plot_count)
+    #simple_partition_prob(MT19937, 6, 200, 200, 4000, Prob, Plot_count)
     Plot_count +=1
     Prob+=0.25

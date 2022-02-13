@@ -112,7 +112,7 @@ def rng_tests(generator_1, generator_2, seed_1, seed_2, number_of_points):
     plt.xlabel(r"{} seed = {}, $\chi_1^2 = {}$".format(bit_generator_1, seed_1, chi_1))
     plt.ylabel("{} seed = {}, $\chi_1^2 = {}$".format(bit_generator_2, seed_2, chi_2))
     plt.tight_layout()
-    #plt.savefig(fname = '{}_{}_{}_{}'.format(bit_generator_1, bit_generator_2, seed_1, seed_2))
+    plt.savefig(fname = '{}_{}_{}_{}'.format(bit_generator_1, bit_generator_2, seed_1, seed_2))
     plt.show()
 
     # Shifted value comparison ( sequential correlation test )
@@ -127,9 +127,9 @@ def rng_tests(generator_1, generator_2, seed_1, seed_2, number_of_points):
         % (correl1, chi_1, pearsoncoeff1),
         fontsize=10,
     ) # Showing all statistics
-    plt.suptitle(bit_generator_1)
+    #plt.suptitle(bit_generator_1)
     plt.tight_layout()
-    #plt.savefig(fname = '{}_{}'.format(bit_generator_1,seed_1))
+    plt.savefig(fname = '{}_{}'.format(bit_generator_1,seed_1))
     plt.show()
 
     # Shifted value comparison ( sequential correlation test )
@@ -142,9 +142,9 @@ def rng_tests(generator_1, generator_2, seed_1, seed_2, number_of_points):
         % (correl2, chi_2, pearsoncoeff2),
         fontsize=10,
     ) # Showing all statistics
-    plt.suptitle(bit_generator_2)
+    #plt.suptitle(bit_generator_2)
     plt.tight_layout()
-    #plt.savefig(fname = '{}_{}'.format(bit_generator_2,seed_2))
+    plt.savefig(fname = '{}_{}'.format(bit_generator_2,seed_2))
     plt.show()
 
     return print('\nTimes:\n{} seed {} = {}µs, \n{} seed {} = {}µs\n'
@@ -260,7 +260,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     ax1.legend()
     ax2.legend()
     plt.tight_layout()
-    #plt.savefig(fname = '{}_{}_correl'.format(bit_generator_1,bit_generator_2))
+    plt.savefig(fname = '{}{}_{}{}_correl'.format(bit_generator_1,seed_1,bit_generator_2,seed_2))
     plt.show()
 
     ################################################
@@ -300,7 +300,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     ax1.legend()
     ax2.legend()
     plt.tight_layout()
-    plt.savefig(fname = '{}_{}_pearson'.format(bit_generator_1,bit_generator_2))
+    plt.savefig(fname = '{}{}_{}{}_pearson'.format(bit_generator_1,seed_1,bit_generator_2,seed_2))
     plt.show()
 
     return print('\nTimes:\n{} seed {} = {}µs, \n{} seed {} = {}µs\n'
@@ -311,4 +311,11 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
 #rng_tests(PCG64,PCG64,6,15832,2000)
 #rng_tests(PCG64,MT19937,6,6,2000)
 #rng_tests(MT19937,MT19937,5255,7381,2000)
-#shift_comparison(PCG64, MT19937, 2010, 2010, 1000)
+#rng_tests(PCG64, MT19937, 6, 7381, 2000)
+rng_tests(MT19937, MT19937, 6, 15832, 2000)
+
+
+#shift_comparison(PCG64, MT19937, 15832, 15832, 1000)
+#shift_comparison(PCG64, MT19937, 6, 6, 1000)
+#shift_comparison(PCG64, MT19937, 7381, 7381, 1000)
+#shift_comparison(PCG64, MT19937, 5255, 5255, 1000)
