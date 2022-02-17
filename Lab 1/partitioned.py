@@ -72,7 +72,7 @@ def simple_partition(generator, seed, total_particles, lhs_particles, time):
     plt.legend()
     plt.hlines(1/2*total_particles,0,time,'lightgrey','--')
     plt.tight_layout()
-    plt.savefig(fname = "Lab 1/IMAGES/{}_{}_Lec_Ex".format(bit_generator, seed))
+    #plt.savefig(fname = "Lab 1/IMAGES/{}_{}_Lec_Ex".format(bit_generator, seed))
 
     return print("Simulation time = {}ms".format(elapsed_time))
 
