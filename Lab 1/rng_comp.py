@@ -110,7 +110,7 @@ def rng_tests(generator_1, generator_2, seed_1, seed_2, number_of_points):
         % (correl_initial, pearsoncoeff_initial),
         fontsize=10,)
     plt.xlabel(r"{} seed = {}, $\chi_1^2 = {}$".format(bit_generator_1, seed_1, chi_1))
-    plt.ylabel("{} seed = {}, $\chi_1^2 = {}$".format(bit_generator_2, seed_2, chi_2))
+    plt.ylabel(r"{} seed = {}, $\chi_1^2 = {}$".format(bit_generator_2, seed_2, chi_2))
     plt.tight_layout()
     #plt.savefig(fname = '{}_{}_{}_{}'.format(bit_generator_1, bit_generator_2, seed_1, seed_2))
     plt.show()
@@ -196,7 +196,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     correlation_1 = np.zeros(number_of_points+1)
     chi_1 = np.zeros_like(correlation_1)
     pearsoncoeff_1 = np.zeros_like(correlation_1)
-    
+
     # Pseudo-random, uniform range between 0-1 with defined seed
     x_1starttime = perf_counter()
     x_1 = rng1.random(number_of_points)
@@ -204,7 +204,7 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
 
     time_1 = x_1endtime - x_1starttime # Time taken to generate
 
-    
+
     for i in range(number_of_points+1):
         x_15 = np.roll(x_1, shift[i]) # Shift values by 1
         correlation_1[i] = np.correlate(x_1, x_15) # Calculate and append stats
@@ -237,21 +237,21 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     ax1.plot(shift, correlation_1)
     ax1.set_title(bit_generator_1)
-    ax1.hlines(correlation_1.max(), shift[0], shift[number_of_points], 
-               color = 'grey', linestyle = '--', 
+    ax1.hlines(correlation_1.max(), shift[0], shift[number_of_points],
+               color = 'grey', linestyle = '--',
                label = "Max = {}".format(np.round(correlation_1.max(), 1)))
     ax1.hlines(np.mean(correlation_1[1:number_of_points]),0,number_of_points,
-               color = "r", linestyle = "--", 
+               color = "r", linestyle = "--",
                label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
                .format(np.round(np.mean(correlation_1[1:number_of_points]), 1), std1, range1))
 
     ax2.plot(shift, correlation_2)
     ax2.set_title(bit_generator_2)
-    ax2.hlines(correlation_2.max(), shift[0], shift[number_of_points], 
-               color = 'grey', linestyle = '--', 
+    ax2.hlines(correlation_2.max(), shift[0], shift[number_of_points],
+               color = 'grey', linestyle = '--',
                label = "Max = {}".format(np.round(correlation_2.max(), 1)))
     ax2.hlines(np.mean(correlation_2[1:number_of_points]),0,number_of_points,
-               color = "r",linestyle = "-.", 
+               color = "r",linestyle = "-.",
                label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
                .format(np.round(np.mean(correlation_2[1:number_of_points]), 1), std2, range2))
     ax2.set_xlabel("Lag $i$")
@@ -275,22 +275,22 @@ def shift_comparison(generator_1, generator_2, seed_1, seed_2, number_of_points)
     fig2, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     ax1.plot(shift, pearsoncoeff_1)
     ax1.set_title(bit_generator_1)
-    ax1.hlines(pearsoncoeff_1.max(), shift[0], shift[number_of_points], 
-               color = 'grey', linestyle = '--', 
+    ax1.hlines(pearsoncoeff_1.max(), shift[0], shift[number_of_points],
+               color = 'grey', linestyle = '--',
                label = "Max = {}".format(np.round(pearsoncoeff_1.max(), 2)))
     ax1.hlines(np.mean(pearsoncoeff_1[1:number_of_points]),0,number_of_points,
-               color = "r", linestyle = "--", 
+               color = "r", linestyle = "--",
                label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
                .format(np.round(np.mean(pearsoncoeff_1[1:number_of_points])*-1,2),
                        pearson_std1, pearson_range1))
 
     ax2.plot(shift, pearsoncoeff_2)
     ax2.set_title(bit_generator_2)
-    ax2.hlines(pearsoncoeff_2.max(), shift[0], shift[number_of_points], 
-               color = 'grey', linestyle = '--', 
+    ax2.hlines(pearsoncoeff_2.max(), shift[0], shift[number_of_points],
+               color = 'grey', linestyle = '--',
                label = "Max = {}".format(np.round(pearsoncoeff_2.max(), 2)))
     ax2.hlines(np.mean(pearsoncoeff_2[1:number_of_points]),0,number_of_points,
-               color = "r", linestyle = "--", 
+               color = "r", linestyle = "--",
                label="$\mu = {}$,\n$\sigma = {}$,\n$\Delta = {}$"
                .format(np.round(np.mean(pearsoncoeff_2[1:number_of_points])*-1, 2),
                        pearson_std2, pearson_range2))

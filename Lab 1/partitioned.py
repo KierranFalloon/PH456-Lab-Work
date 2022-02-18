@@ -41,7 +41,6 @@ def simple_partition(generator, seed, total_particles, lhs_particles, time):
     assert generator in [PCG64,MT19937], 'rng2 - Valid bitgenerator must be used'
 
     # Get names as strings from np.random class
-    bit_generator = generator.__name__
     rng = Generator(generator(seed = seed))
     plt.figure()
 
@@ -54,8 +53,8 @@ def simple_partition(generator, seed, total_particles, lhs_particles, time):
     mean_array = np.empty((time,2))
 
     for i in range(time):
-        r = rng.integers(1,total_particles,1)[0]
-        m_array[r], r_array[r] = r_array[r], m_array[r]
+        r_value = rng.integers(1,total_particles,1)[0]
+        m_array[r_value], r_array[r_value] = r_array[r_value], m_array[r_value]
         m_sumarray[i], r_sumarray[i] = m_array.sum(), r_array.sum()
         mean_array[i,0] = np.mean(m_sumarray[:i])
         mean_array[i,1] = np.mean(r_sumarray[:i])
@@ -106,9 +105,9 @@ def simple_partition_prob(generator, seed, total_particles, lhs_particles, time,
     mean_array = np.empty((time,2))
 
     for i in range(time):
-        r = rng.random() # Create random float between 0 and 1
+        r_value = rng.random() # Create random float between 0 and 1
         index = rng.choice(lhs_particles,1) # Create random index choice
-        if 0 < r < prob: # If random float is within probability of moving
+        if 0 < r_value < prob: # If random float is within probability of moving
             m_array[index], r_array[index] = 0 , 1 # Move a particle from LHS to RHS
         else:
             m_array[index], r_array[index] = 1 , 0 # Move a particle from RHS to LHS
@@ -152,5 +151,7 @@ fig, axs = plt.subplots(3, sharex=True, sharey=True, figsize = (10,10))
 while Prob < 1:
     #simple_partition_prob(PCG64, 6, 200, 200, 4000, Prob, Plot_count)
     #simple_partition_prob(MT19937, 6, 200, 200, 4000, Prob, Plot_count)
+    #simple_partition_prob(PCG64, 15832, 200, 200, 4000, Prob, Plot_count)
+    #simple_partition_prob(MT19937, 15832, 200, 200, 4000, Prob, Plot_count)
     Plot_count +=1
     Prob+=0.25
