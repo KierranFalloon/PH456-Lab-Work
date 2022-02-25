@@ -96,3 +96,15 @@ integral5, variance5, rms5, time5 = montecarlo_integrator(sphere_func_3, [-2,2,-
 integral6, variance6, rms6, time6 = montecarlo_integrator(sphere_func_5, [-2,2,-2,2,-2,2,-2,2,-2,2], 10000)
 print(integral5, variance5, rms5, time5)
 print(integral6, variance6, rms6, time6)
+
+def function5(ax, ay, az, bx, by, bz, cx, cy, cz):
+    a = (ax,ay,az)
+    b = (bx,by,bz)
+    c = (cx,cy,cz)
+    
+    return 1 / np.dot(np.add(a,b),c)
+
+integral7, variance7, rms7, time7 = montecarlo_integrator(function5,[0,1,0,1,0,1,
+                                                                     0,1,0,1,0,1,
+                                                                     0,1,0,1,0,1,], 1000)
+print(integral7)
