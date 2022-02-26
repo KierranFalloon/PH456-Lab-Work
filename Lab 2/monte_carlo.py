@@ -36,13 +36,16 @@ def montecarlo_integrator(func, lim_array, sample_points):
         k+=1 # Index just for assigning rand_vals array
 
     for i in range(sample_points): # Loop through number of points again
-        func_vals += func(*rand_vals[i]) 
+        func_vals += func(*rand_vals[i])
         # Determine sum for function value by unpacking each random [xi,yi,zi]
-        var_vals += (func(*rand_vals[i]))**2 
+        var_vals += np.square(func(*rand_vals[i]))
         # Determine sum for variance values similarly
-    integral = area/sample_points * func_vals
+
+    integral = area/sample_points * func_vals 
+    variance = 1/sample_points * (1/sample_points * var_vals - 
+                                  np.square(1/sample_points * func_vals))
+    
     # Collate terms in integration estimation
-    variance = ( 1/sample_points * ((var_vals) - (func_vals**2)) )
     root_mean_squared = np.sqrt(variance)
     # Collate terms in variance of integration estimation
     end_time = perf_counter()
@@ -106,5 +109,5 @@ def function5(ax, ay, az, bx, by, bz, cx, cy, cz):
 
 integral7, variance7, rms7, time7 = montecarlo_integrator(function5,[0,1,0,1,0,1,
                                                                      0,1,0,1,0,1,
-                                                                     0,1,0,1,0,1,], 1000)
-print(integral7)
+                                                                     0,1,0,1,0,1,], 100000)
+print(integral7, variance7, rms7, time7)
