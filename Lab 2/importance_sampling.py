@@ -38,26 +38,31 @@ def importance_sampling_integral(func, weighing_func, nonuniform_func, lim_array
         j+=2 # Always of form [lower, upper, lower, upper, ...] so +2 to get to next lower limit
         k+=1 # Index just for assigning rand_vals array
     
+    ### Finding ideal Delta value
     delta = np.arange(0,lim_array[1]+10,1)
     accepted_array = np.empty_like(delta)
 
     for d in range(len(delta)): # Testing optimal delta in range
         placeholder, accepted_array[d], placeholder_2 = metropolis_algorithm(weighing_func, rand_vals, delta[d]) # perform metropolis algorithm
     idx = (np.abs(accepted_array - (0.5*sample_points))).argmin()
-
+    
     plt.scatter(delta, accepted_array, marker = 'o', color = 'green', label = 'Accepted')
     plt.scatter(delta[idx], accepted_array[idx], marker = 'x', color = 'red', label = 'Ideal $\delta= {}$'.format(delta[idx]))
     plt.xlabel('Delta value')
     plt.ylabel('No. of values')
     plt.legend()
     plt.show()
+    ###
+    
     norm_rand_vals, a, b = metropolis_algorithm(weighing_func, rand_vals, delta[idx]) # Use ideal delta
     plt.plot(rand_vals)
     plt.plot(norm_rand_vals)
     plt.show()
+    
+    scaled_rand_vals = nonuniform_func(norm_rand_vals)
 
     for i in range(sample_points): # Loop through number of points again
-        func_vals += (func(*rand_vals[i]) / weighing_func(*rand_vals[i]))
+        func_vals += (func(*norm_rand_vals[i]) / weighing_func(*norm_rand_vals[i]))
         # Determine sum for function value by unpacking each random [xi,yi,zi]
         # Determine sum for variance values similarly
         
