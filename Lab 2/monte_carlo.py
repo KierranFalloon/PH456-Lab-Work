@@ -111,3 +111,20 @@ integral7, variance7, rms7, time7 = montecarlo_integrator(function5,[0,1,0,1,0,1
                                                                      0,1,0,1,0,1,
                                                                      0,1,0,1,0,1,], 100000)
 print(integral7, variance7, rms7, time7)
+
+def integrand_1(x):
+    return np.exp(-(x**2))
+
+def integrand_2(x):
+    return 2*np.exp(-(x**2))
+
+def integrand_3(x):
+    return 1.5*np.sin(x)
+
+integral8, a, b, c = montecarlo_integrator(integrand_1, [0,1], 10000)
+
+integral9, a, b, c = montecarlo_integrator(integrand_2, [-10,10], 10000)
+
+integral10, a, b, c = montecarlo_integrator(integrand_3, [0,np.pi], 10000)
+
+print(integral8, integral9, integral10)

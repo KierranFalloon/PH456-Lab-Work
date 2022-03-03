@@ -2,9 +2,10 @@ import math
 from time import perf_counter
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 
     
-def importance_sampling_integral(func, weighing_func, nonuniform_func, lim_array, sample_points):
+def importance_sampling_integral(func, weighing_func, lim_array, sample_points):
     
     """ Integrates function using importance sampling, using the metropolis method to take 
     nonuniform samples of the weighing function.
@@ -39,33 +40,36 @@ def importance_sampling_integral(func, weighing_func, nonuniform_func, lim_array
         k+=1 # Index just for assigning rand_vals array
     
     ### Finding ideal Delta value
-    delta = np.arange(0,lim_array[1]+10,1)
-    accepted_array = np.empty_like(delta)
+    delta_array = np.arange(1,sample_points,1)
+    accepted_array = np.empty_like(delta_array)
+    #rand_vals = np.arange(0, sample_points)
 
-    for d in range(len(delta)): # Testing optimal delta in range
-        placeholder, accepted_array[d], placeholder_2 = metropolis_algorithm(weighing_func, rand_vals, delta[d]) # perform metropolis algorithm
-    idx = (np.abs(accepted_array - (0.5*sample_points))).argmin()
+    for d in range(len(delta_array)): # Testing optimal delta in range
+        placeholder, accepted_array[d], placeholder_2 = metropolis_algorithm(weighing_func, rand_vals, delta_array[d]) # perform metropolis algorithm
+    idx = (np.abs(accepted_array - (0.5*sample_points))).argmin() # Find delta closest to 50% acceptance
     
-    plt.scatter(delta, accepted_array, marker = 'o', color = 'green', label = 'Accepted')
-    plt.scatter(delta[idx], accepted_array[idx], marker = 'x', color = 'red', label = 'Ideal $\delta= {}$'.format(delta[idx]))
-    plt.xlabel('Delta value')
-    plt.ylabel('No. of values')
-    plt.legend()
-    plt.show()
+    #plt.scatter(delta_array, accepted_array, marker = 'o', color = 'green', label = 'Accepted')
+    #plt.scatter(delta_array[idx], accepted_array[idx], marker = 'x', color = 'red', label = 'Ideal $\delta= {}$'.format(delta_array[idx]))
+    #plt.xlabel('Delta value')
+    #plt.ylabel('No. of values')
+    #plt.legend()
+    #plt.show()
     ###
     
-    norm_rand_vals, a, b = metropolis_algorithm(weighing_func, rand_vals, delta[idx]) # Use ideal delta
-    plt.plot(rand_vals)
-    plt.plot(norm_rand_vals)
-    plt.show()
+    norm_rand_vals, a, b = metropolis_algorithm(weighing_func, rand_vals, delta_array[idx]) # Use ideal delta
+    function_plots(func, weighing_func, norm_rand_vals, lim_array)
     
-    scaled_rand_vals = nonuniform_func(norm_rand_vals)
+    #plt.hist(norm_rand_vals, 100)
+    #plt.hist(rand_vals)
+    #plt.hist(norm_rand_vals, 10)
+    #plt.xlim(norm_rand_vals.min(),norm_rand_vals.max())
+    #plt.show()
 
     for i in range(sample_points): # Loop through number of points again
         func_vals += (func(*norm_rand_vals[i]) / weighing_func(*norm_rand_vals[i]))
         # Determine sum for function value by unpacking each random [xi,yi,zi]
         # Determine sum for variance values similarly
-        
+    
     integral = 1/sample_points * func_vals
 
     # Collate terms in variance of integration estimation
@@ -84,66 +88,77 @@ def metropolis_algorithm(sampling_func, rand_vals_array, delta):
         delta (float): Delta as defined in the metropolis algorithm
 
     Returns:
-        (array): Array of pseuo-random values from random walk with sampling function
+        (array): Array of non-uniform values from random walk with sampling function
     """
-    new_rand_vals = np.empty_like(rand_vals_array)
     accepted = 0
-    for count in range(len(rand_vals_array)):
-        new_rand = rand_vals_array[count] + np.random.uniform(-delta, delta, 1)
-        w = sampling_func(new_rand) / sampling_func(rand_vals_array[count])
+    counter = 0
+    new_rand_vals = rand_vals_array.copy() # So that each test it is not changed
+    index = np.random.randint(0, len(rand_vals_array), 1) # arb. stating point
+    
+    while counter < len(rand_vals_array): # full circle around array
+        
+        trial_val = rand_vals_array[index-1] + np.random.randint(-1*delta, delta, 1)
+        w = sampling_func(trial_val) / sampling_func(rand_vals_array[index-1])
+
         if w >= 1:
-            new_rand_vals[count] = new_rand
+            new_rand_vals[index] = trial_val
             accepted += 1
+            
         else:
             r = np.random.uniform(0,1,1)
+            
             if r <= w:
-                new_rand_vals[count] = new_rand
+                new_rand_vals[index] = trial_val
                 accepted += 1
+                
             else:
-                new_rand_vals[count] = rand_vals_array[count]
+                new_rand_vals[index] = rand_vals_array[index-1]
+        counter += 1
+        
     return new_rand_vals, accepted, delta
+
+def function_plots(integrand, weighing_func, x, lim_array):
+
+    plt.figure()
+    plt.plot(x, integrand(x), marker = 'x', linestyle = 'None', label = 'Integrand function', color = 'orange')
+    plt.plot(x, weighing_func(x), marker = 'x', linestyle = 'None', label = 'Weighing function', color = 'blue')
+    plt.xlabel('x')
+    plt.ylabel('f(x)')
+    plt.xlim(lim_array[0], lim_array[1])
+    plt.legend()
+    plt.show()
 
 ## Lecture example, to test the integrator
 def integrand_1(x):
-    return np.exp(-x**2)
+    return np.exp(-(x**2))
 
 def weighing_func_1(x):
     A = (1 / (1-np.exp(-1)))
     return A * np.exp(-x)
 
-def nonuniform_func_1(uniform_array):
-    A = (1 / (1-np.exp(-1)))
-    return -np.log(1 - (uniform_array/A))
-
 integral, time = importance_sampling_integral(integrand_1,
                                               weighing_func_1,
-                                              nonuniform_func_1,
                                               [0,1],
                                               100)
-print(integral)
-
+print(integral, time)
 
 ## 5a). approx 3.54
 
 def integrand_2(x):
-    return 2*np.exp(-x**2)
+    return 2*np.exp(-(x**2))
 
 def weighing_func_2(x):
-    A = 1 / (2*(1-np.exp(-10)))
-    return A * np.exp(-np.abs(x))
-
-def nonuniform_func_2(uniform_array):
-    A = 1 / (2*(1-np.exp(-10)))
-    return -np.log((uniform_array/A))+10
+    A = (1 / (2*(1-np.exp(-10))))
+    return  (A * np.exp(-(np.abs(x))))
 
 integral2, time2 = importance_sampling_integral(integrand_2,
                                                 weighing_func_2,
-                                                nonuniform_func_2,
                                                 [-10,10],
                                                 100)
 
 print(integral2)
 
+## 5b). = 3
 def integrand_3(x):
     return 1.5*np.sin(x)
 
@@ -151,9 +166,8 @@ def weighing_func_3(x):
     A = 3 / (2*np.pi)
     return A * (4/(np.pi**2))*x*(np.pi - x)
 
-def nonuniform_func_2(uniform_array):
-    A = 1 / (2*(1-np.exp(-10)))
-    return -np.log((uniform_array/A))+10
-
-integral3, time3 = importance_sampling_integral(integrand_3, weighing_func_3, nonuniform_func_2, [0,np.pi], 100)
+integral3, time3 = importance_sampling_integral(integrand_3, 
+                                                weighing_func_3, 
+                                                [0,np.pi], 
+                                                100)
 print(integral3)
