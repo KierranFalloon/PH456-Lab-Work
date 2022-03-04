@@ -121,10 +121,26 @@ def integrand_2(x):
 def integrand_3(x):
     return 1.5*np.sin(x)
 
-integral8, a, b, c = montecarlo_integrator(integrand_1, [0,1], 10000)
+## Convergence correlation with sampling
+def convergence_test(integrand, lim_array, definite_integral):
+    
+    if definite_integral == None:
+        definite_integral, a, b, c = montecarlo_integrator(integrand, lim_array, 100000)
+        # If no definite integral is known it is estimated with high sample size initially
+        
+    print("\nRunning convergence test...\n")
+    samples = 10 # low initial number
+    error = 0.01*definite_integral
+    integral = montecarlo_integrator(integrand, lim_array, samples)
+    while True:
+        print(integral[0])
+        print((definite_integral - error) >= integral[0] or integral[0] <= (definite_integral + error))
+        if (definite_integral - error) >= integral[0] or integral[0] <= (definite_integral + error):
+            integral = montecarlo_integrator(integrand, lim_array, samples)
+            samples += 1000
+        else:
+            integral = montecarlo_integrator(integrand, lim_array, samples)
+            return integral[0], samples, integral[2]
 
-integral9, a, b, c = montecarlo_integrator(integrand_2, [-10,10], 10000)
-
-integral10, a, b, c = montecarlo_integrator(integrand_3, [0,np.pi], 10000)
-
-print(integral8, integral9, integral10)
+#integral, samples, convergence_error = convergence_test(integrand_1, [0,1], 0.746824132812427)
+#print(integral, samples, convergence_error)
