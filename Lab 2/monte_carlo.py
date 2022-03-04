@@ -2,6 +2,7 @@ import math
 from time import perf_counter
 import numpy as np
 import matplotlib.pyplot as plt
+from numba import jit
 
 def montecarlo_integrator(func, lim_array, sample_points):
 
@@ -113,34 +114,57 @@ integral7, variance7, rms7, time7 = montecarlo_integrator(function5,[0,1,0,1,0,1
 print(integral7, variance7, rms7, time7)
 
 def integrand_1(x):
-    return np.exp(-(x**2))
-
-def integrand_2(x):
     return 2*np.exp(-(x**2))
 
-def integrand_3(x):
+def integrand_2(x):
     return 1.5*np.sin(x)
 
 ## Convergence correlation with sampling
-def convergence_test(integrand, lim_array, definite_integral):
+def convergence_test(integrand, lim_array, definite_integral, samples):
     
     if definite_integral == None:
         definite_integral, a, b, c = montecarlo_integrator(integrand, lim_array, 100000)
         # If no definite integral is known it is estimated with high sample size initially
         
-    print("\nRunning convergence test...\n")
-    samples = 10 # low initial number
-    error = 0.01*definite_integral
+    #print("\nRunning convergence test...\n")
     integral = montecarlo_integrator(integrand, lim_array, samples)
-    while True:
-        print(integral[0])
-        print((definite_integral - error) >= integral[0] or integral[0] <= (definite_integral + error))
-        if (definite_integral - error) >= integral[0] or integral[0] <= (definite_integral + error):
-            integral = montecarlo_integrator(integrand, lim_array, samples)
-            samples += 1000
-        else:
-            integral = montecarlo_integrator(integrand, lim_array, samples)
-            return integral[0], samples, integral[2]
+    #print('Initial value = {}'.format(integral[0]))
+    while not (99 <= (integral[0]/definite_integral)*100 <= 100):
+        #print((integral[0]/definite_integral)*100)
+        integral = montecarlo_integrator(integrand, lim_array, samples)
+        samples += 100
+        
+    samples1 = samples
+        
+    #print("\n ±1'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
 
-#integral, samples, convergence_error = convergence_test(integrand_1, [0,1], 0.746824132812427)
-#print(integral, samples, convergence_error)
+    while not (99.5 <= (integral[0]/definite_integral)*100 <= 100.5):
+        #print((integral[0]/definite_integral)*100)
+        integral = montecarlo_integrator(integrand, lim_array, samples)
+        samples += 1
+    
+    #print("\n ±0.5'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
+    
+    return samples1, samples, integral[2]
+
+mc_samples_array = np.empty([2,10])
+for b in range(10):
+    values = convergence_test(integrand_1,
+                              [-10,10],
+                              3.544907701811032,
+                              1000)
+    mc_samples_array[0,b] = values[0]
+    mc_samples_array[1,b] = values[1]
+print("\nMean ±1 samples = {}".format(np.mean(mc_samples_array[0,:])))
+print("Mean ±0.5 samples = {}".format(np.mean(mc_samples_array[1,:])))
+
+mc_samples_array = np.empty([2,10])
+for b in range(10):
+    values = convergence_test(integrand_2,
+                              [0,np.pi],
+                              3.0,
+                              1000)
+    mc_samples_array[0,b] = values[0]
+    mc_samples_array[1,b] = values[1]
+print("\nMean ±1 samples = {}".format(np.mean(mc_samples_array[0,:])))
+print("Mean ±0.5 samples = {}".format(np.mean(mc_samples_array[1,:])))
