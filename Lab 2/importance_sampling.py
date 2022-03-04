@@ -195,6 +195,7 @@ def convergence_test(integrand, weighing_func, lim_array, definite_integral, sam
         samples += 1
     #print("\n ±0.1'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
     return samples01, samples, integral[0]
+
 """
 mc_samples_array = np.empty([2,10])
 for b in range(10):
