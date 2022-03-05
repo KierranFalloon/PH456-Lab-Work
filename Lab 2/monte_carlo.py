@@ -2,7 +2,7 @@ import math
 from time import perf_counter
 import numpy as np
 import matplotlib.pyplot as plt
-from numba import jit
+from mpl_toolkits import mplot3d
 
 def montecarlo_integrator(func, lim_array, sample_points):
 
