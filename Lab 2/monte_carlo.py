@@ -29,10 +29,9 @@ def montecarlo_integrator(func, lim_array, sample_points):
     while j <= dimensions+(dimensions-1): # Loop through limits via auto counting dimensions
         area *= lim_array[j+1] - lim_array[j]
         # area = Previous difference in limits * this one, for all limits
-        for i in range(sample_points): # Loop through number of points
-            rand_vals[i, k] = np.random.uniform(lim_array[j], lim_array[j+1], 1)
-            # Create random number and store it in the array, such that each random number
-            # is within the input limits
+        rand_vals[:, k] = np.random.uniform(lim_array[j], lim_array[j+1], sample_points)
+        # Create random number and store it in the array, such that each random number
+        # is within the input limits
         j+=2 # Always of form [lower, upper, lower, upper, ...] so +2 to get to next lower limit
         k+=1 # Index just for assigning rand_vals array
 
@@ -67,16 +66,16 @@ def function4(x,y):
     return x*y + x
 
 integral1, variance1, rms1, time1 = montecarlo_integrator(function1,[0,1],10000)
-print(integral1, variance1, rms1, time1)
+print("Integral = {} ± {}, time taken = {}s".format(integral1, rms1, time1))
 
 integral2, variance2, rms2, time2 = montecarlo_integrator(function2,[0,1],10000)
-print(integral2, variance2, rms2, time2)
+print("Integral = {} ± {}, time taken = {}s".format(integral2, rms2, time2))
 
 integral3, variance3, rms3, time3 = montecarlo_integrator(function3,[-2,2],10000)
-print(integral3, variance3, rms3, time3)
+print("Integral = {} ± {}, time taken = {}s".format(integral3, rms3, time3))
 
 integral4, variance4, rms4, time4 = montecarlo_integrator(function4, [0,1,0,1], 10000)
-print(integral4, variance4, rms4, time4)
+print("Integral = {} ± {}, time taken = {}s".format(integral4, rms4, time4))
 
 # Use your subroutine to evaluate the size of the region enclosed
 # within an n-sphere of radius 2.0, for n = 3 (i.e. the volume of a ball of
@@ -97,9 +96,9 @@ def sphere_func_5(x,y,z,rho,epsilon):
         return 0
 
 integral5, variance5, rms5, time5 = montecarlo_integrator(sphere_func_3, [-2,2,-2,2,-2,2], 10000)
+print("Integral = {} ± {}, time taken = {}s".format(integral5, rms5, time5))
 integral6, variance6, rms6, time6 = montecarlo_integrator(sphere_func_5, [-2,2,-2,2,-2,2,-2,2,-2,2], 10000)
-print(integral5, variance5, rms5, time5)
-print(integral6, variance6, rms6, time6)
+print("Integral = {} ± {}, time taken = {}s".format(integral6, rms6, time6))
 
 def function5(ax, ay, az, bx, by, bz, cx, cy, cz):
     a = (ax,ay,az)
@@ -111,7 +110,7 @@ def function5(ax, ay, az, bx, by, bz, cx, cy, cz):
 integral7, variance7, rms7, time7 = montecarlo_integrator(function5,[0,1,0,1,0,1,
                                                                      0,1,0,1,0,1,
                                                                      0,1,0,1,0,1,], 100000)
-print(integral7, variance7, rms7, time7)
+print("Integral = {} ± {}, time taken = {}s".format(integral7, rms7, time7))
 
 def integrand_1(x):
     return 2*np.exp(-(x**2))
@@ -138,33 +137,46 @@ def convergence_test(integrand, lim_array, definite_integral, samples):
         
     #print("\n ±1'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
 
-    while not (99.5 <= (integral[0]/definite_integral)*100 <= 100.5):
+    while not (99.9 <= (integral[0]/definite_integral)*100 <= 100.1):
         #print((integral[0]/definite_integral)*100)
         integral = montecarlo_integrator(integrand, lim_array, samples)
         samples += 1
     
     #print("\n ±0.5'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
     
-    return samples1, samples, integral[2]
+    return samples1, samples, integral[0], integral[3]
 
-mc_samples_array = np.empty([2,10])
-for b in range(10):
+
+runs = 10 # Increase runs to increase number of tests
+information_array = np.empty([4,runs])
+for b in range(runs):
     values = convergence_test(integrand_1,
                               [-10,10],
                               3.544907701811032,
-                              1000)
-    mc_samples_array[0,b] = values[0]
-    mc_samples_array[1,b] = values[1]
-print("\nMean ±1 samples = {}".format(np.mean(mc_samples_array[0,:])))
-print("Mean ±0.5 samples = {}".format(np.mean(mc_samples_array[1,:])))
+                              10) # Run convergence test defined above
+    information_array[0,b] = values[0] # Assign variables to each sample count
+    information_array[1,b] = values[1]
+    information_array[2,b] = values[2] # integral values
+    information_array[3,b] = values[3] # time values
 
-mc_samples_array = np.empty([2,10])
-for b in range(10):
+print("\nMean ±1 sample_points = {}".format(np.mean(information_array[0,:])))
+print("Mean ±0.1 sample_points = {}".format(np.mean(information_array[1,:])))
+print("Mean integral value = {}".format(np.mean(information_array[2,:])))
+print("Mean time taken = {}s".format(np.mean(np.mean(information_array[3,:]))))
+
+information_array = np.empty([4,runs]) # Same as above, for second integral
+for b in range(runs):
     values = convergence_test(integrand_2,
                               [0,np.pi],
                               3.0,
-                              1000)
-    mc_samples_array[0,b] = values[0]
-    mc_samples_array[1,b] = values[1]
-print("\nMean ±1 samples = {}".format(np.mean(mc_samples_array[0,:])))
-print("Mean ±0.5 samples = {}".format(np.mean(mc_samples_array[1,:])))
+                              10)
+    information_array[0,b] = values[0] # Assign variables to each sample count
+    information_array[1,b] = values[1]
+    information_array[2,b] = values[2] # integral values
+    information_array[3,b] = values[3] # time values
+
+print("\nMean ±1 sample_points = {}".format(np.mean(information_array[0,:])))
+print("Mean ±0.1 sample_points = {}".format(np.mean(information_array[1,:])))
+print("Mean integral value = {}".format(np.mean(information_array[2,:])))
+print("Mean time taken = {}s".format(np.mean(np.mean(information_array[3,:]))))
+
