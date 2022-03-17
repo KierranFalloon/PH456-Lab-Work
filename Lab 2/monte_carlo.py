@@ -81,29 +81,24 @@ print("Integral = {} ± {}, time taken = {}s".format(integral4, rms4, time4))
 # within an n-sphere of radius 2.0, for n = 3 (i.e. the volume of a ball of
 # radius 1.5) and n=5.
 
-def sphere_func_3(x,y,z):
+def sphere_func(*coordinates):
     
-    if np.sqrt(x**2 + y**2 + z**2) <= 2:
+    coordinates_array = np.array(coordinates)
+    if np.linalg.norm(coordinates_array) <= 2:
         return 1
     else:
         return 0
 
-def sphere_func_5(x,y,z,rho,epsilon):
-    
-    if np.sqrt(x**2 + y**2 + z**2 + rho**2 + epsilon**2) <= 2:
-        return 1
-    else:
-        return 0
 
-integral5, variance5, rms5, time5 = montecarlo_integrator(sphere_func_3, [-2,2,-2,2,-2,2], 10000)
+integral5, variance5, rms5, time5 = montecarlo_integrator(sphere_func, [-2,2,-2,2,-2,2], 10000)
 print("Integral = {} ± {}, time taken = {}s".format(integral5, rms5, time5))
-integral6, variance6, rms6, time6 = montecarlo_integrator(sphere_func_5, [-2,2,-2,2,-2,2,-2,2,-2,2], 10000)
+integral6, variance6, rms6, time6 = montecarlo_integrator(sphere_func, [-2,2,-2,2,-2,2,-2,2,-2,2], 10000)
 print("Integral = {} ± {}, time taken = {}s".format(integral6, rms6, time6))
 
-def function5(ax, ay, az, bx, by, bz, cx, cy, cz):
-    a = (ax,ay,az)
-    b = (bx,by,bz)
-    c = (cx,cy,cz)
+def function5(*coordinates):
+    a = (coordinates[0], coordinates[1], coordinates[2])
+    b = (coordinates[3], coordinates[4], coordinates[5])
+    c = (coordinates[6], coordinates[7], coordinates[8])
     
     return 1 / np.dot(np.add(a,b),c)
 

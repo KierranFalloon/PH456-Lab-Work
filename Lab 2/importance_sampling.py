@@ -100,7 +100,7 @@ def metropolis_algorithm(sampling_func, array, lim_array,
             initial_value = trial_val
             accepted += 1
                                                 
-        # Discard first (discard_init) values, and only keep every (discard_sampling)nd value
+        # Discard initial (discard_init) values, and only keep every (discard_sampling)nd value
         # after that
         if (counter > discard_init) and (counter % discard_sampling == 0):
             array[(counter - discard_init) // discard_sampling, k] = initial_value
