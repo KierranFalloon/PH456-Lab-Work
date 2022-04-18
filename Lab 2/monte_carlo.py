@@ -50,12 +50,48 @@ def montecarlo_integrator(func, lim_array, sample_points):
     return integral, variance, root_mean_squared, time # Return values
 
 def function1(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return 2
+
 def function2(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return -x_vals
+
 def function3(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return x_vals**2
+
 def function4(x_vals,y_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+        y_vals (array): y values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return x_vals*y_vals + x_vals
 
 integral1, variance1, rms1, time1 = montecarlo_integrator(function1,[0,1],10000)
@@ -70,11 +106,14 @@ print("Integral = {} ± {}, time taken = {}s".format(integral3, rms3, time3))
 integral4, variance4, rms4, time4 = montecarlo_integrator(function4, [0,1,0,1], 10000)
 print("Integral = {} ± {}, time taken = {}s".format(integral4, rms4, time4))
 
-# Use your subroutine to evaluate the size of the region enclosed
-# within an n-sphere of radius 2.0, for n = 3 (i.e. the volume of a ball of
-# radius 1.5) and n=5.
 
 def sphere_func(*coordinates):
+    """ Step function to emulate n-sphere integral
+
+
+    Returns:
+        int: 1 if r <= radius, 0 otherwise
+    """
 
     coordinates_array = np.array(coordinates)
     if np.linalg.norm(coordinates_array) <= 2:
@@ -93,25 +132,63 @@ integral6, variance6, rms6, time6 = montecarlo_integrator(sphere_func,
 print("Integral = {} ± {}, time taken = {}s".format(integral6, rms6, time6))
 
 def function5(*coordinates):
-    a = (coordinates[0], coordinates[1], coordinates[2])
-    b = (coordinates[3], coordinates[4], coordinates[5])
-    c = (coordinates[6], coordinates[7], coordinates[8])
+    """ 9-D vector function as defined
 
-    return 1 / np.dot(np.add(a,b),c)
+    Returns:
+        float: the function values at each input
+    """
+    # Coordinates unpacked
+    a_vals = (coordinates[0], coordinates[1], coordinates[2])
+    b_vals = (coordinates[3], coordinates[4], coordinates[5])
+    c_vals = (coordinates[6], coordinates[7], coordinates[8])
+
+    return 1 / np.dot(np.add(a_vals,b_vals), c_vals)
 
 integral7, variance7, rms7, time7 = montecarlo_integrator(function5,[0,1,0,1,0,1,
                                                                      0,1,0,1,0,1,
                                                                      0,1,0,1,0,1,], 100000)
 print("Integral = {} ± {}, time taken = {}s".format(integral7, rms7, time7))
 
+## Integrands for comparison to importance sampling method
 def integrand_1(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return 2*np.exp(-(x_vals**2))
 
 def integrand_2(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return 1.5*np.sin(x_vals)
 
 ## Convergence correlation with sampling
 def convergence_test(integrand, lim_array, definite_integral, samples):
+    """ Tests convergence rate of the importance_sampling function in terms of number of
+    sample_points needed to converge within an error bound of the actual known integral
+
+    Args:
+        integrand (function): Defined function that returns function to be integrated
+        lim_array (array): Array of limits of the form [x_min, x_max, y_min, y_max, ...]
+        definite_integral (float): Definite value of the integral to be assessed
+        sample_points (int): Number of points to sample initially
+
+    Returns:
+        sample1 (int): number of samples needed to converge to ± 1% accuracy
+        samples (int): number of samples needed to converge to ± 0.1% accuracy
+        integral[0] (float): Value returned from importance_sampling for the integral
+        integral[3] (float): Time taken for each run
+    """
 
     if definite_integral is None:
         vals = montecarlo_integrator(integrand, lim_array, 100000)
@@ -139,6 +216,7 @@ def convergence_test(integrand, lim_array, definite_integral, samples):
 
     return samples1, samples, integral[0], integral[3]
 
+exit() # Remove to run comparison
 
 RUNS = 10 # Increase runs to increase number of tests
 information_array = np.empty([4,RUNS])

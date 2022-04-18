@@ -140,7 +140,6 @@ def function_plots(integrand, weighing_func, x_vals, lim_array, sample_points):
 ## Convergence correlation with sampling
 
 def convergence_test(integrand, weighing_func, lim_array, definite_integral, sample_points):
-
     """ Tests convergence rate of the importance_sampling function in terms of number of
     sample_points needed to converge within an error bound of the actual known integral
 
@@ -203,9 +202,25 @@ def convergence_test(integrand, weighing_func, lim_array, definite_integral, sam
 ## 5a). approx 3.54
 
 def integrand_1(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return 2*np.exp(-(x_vals**2))
 
 def weighing_func_1(x_vals):
+    """ Weighing function to be sampled as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input, normalised via norm_constant
+    """
     norm_constant = (1 / (2*(1-np.exp(-10))))
     return  (norm_constant * np.exp(-(np.abs(x_vals))))
 
@@ -220,9 +235,25 @@ print("Integral = {} ± {}, time taken = {}s,\nAcceptance rate = {}%"
 
 ## 5b). = 3
 def integrand_2(x_vals):
+    """ Function to be integrated as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input
+    """
     return 1.5*np.sin(x_vals)
 
 def weighing_func_2(x_vals):
+    """ Weighing function to be sampled as defined
+
+    Args:
+        x_vals (array): x values for the function
+
+    Returns:
+        float: the function values at each input, normalised via norm_constant
+    """
     norm_constant = 3 / (2*np.pi)
     return norm_constant * (4/(np.pi**2))*x_vals*(np.pi - x_vals)
 
