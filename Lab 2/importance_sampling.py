@@ -165,13 +165,11 @@ def convergence_test(integrand, weighing_func, lim_array, definite_integral, sam
                                                          1000)
         # If no definite integral is known it is estimated with high sample size initially
 
-    #print("\nRunning convergence test...\n")
     integral = importance_sampling_integral(integrand,
                                             weighing_func,
                                             lim_array,
                                             sample_points)
-
-    #print('Initial value = {}'.format(integral[0]))
+    
     while not 99 <= (integral[0]/definite_integral)*100 <= 101:
         # While integral is not ±1% from definite integral defined
         integral = importance_sampling_integral(integrand,
@@ -183,9 +181,6 @@ def convergence_test(integrand, weighing_func, lim_array, definite_integral, sam
     # sample_points it took to get to within ± 1%. Since it increases in steps of 10, this
     #c an also cross over the next boundary
 
-    #print("\n ±1'%' accuracy within {} sample_points...\nvalue = {}\n"
-    #       .format(sample_points, integral[0]))
-
     while not 99.9 <= (integral[0]/definite_integral)*100 <= 100.1:
         # Same as before, for new interval
         integral = importance_sampling_integral(integrand,
@@ -194,8 +189,6 @@ def convergence_test(integrand, weighing_func, lim_array, definite_integral, sam
                                                 sample_points)
         sample_points += 1
         # Smaller sample size increase for more accurate number
-    #print("\n ±0.1'%' accuracy within {} sample_points...\nvalue = {}\n"
-    #       .format(sample_points, integral[0]))
     return sample_points01, sample_points, integral[0], integral[1], integral[4]
 # Return these values for printing
 

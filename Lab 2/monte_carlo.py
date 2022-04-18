@@ -195,24 +195,16 @@ def convergence_test(integrand, lim_array, definite_integral, samples):
         definite_integral = vals[0]
         # If no definite integral is known it is estimated with high sample size initially
 
-    #print("\nRunning convergence test...\n")
     integral = montecarlo_integrator(integrand, lim_array, samples)
-    #print('Initial value = {}'.format(integral[0]))
     while not 99 <= (integral[0]/definite_integral)*100 <= 100:
-        #print((integral[0]/definite_integral)*100)
         integral = montecarlo_integrator(integrand, lim_array, samples)
         samples += 100
 
     samples1 = samples
 
-    #print("\n ±1'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
-
     while not 99.9 <= (integral[0]/definite_integral)*100 <= 100.1:
-        #print((integral[0]/definite_integral)*100)
         integral = montecarlo_integrator(integrand, lim_array, samples)
         samples += 1
-
-    #print("\n ±0.5'%' accuracy within {} samples...\nvalue = {}\n".format(samples, integral[0]))
 
     return samples1, samples, integral[0], integral[3]
 
